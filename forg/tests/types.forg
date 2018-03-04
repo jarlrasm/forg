@@ -1,0 +1,22 @@
+types = module 
+(
+  import core
+  where
+    tristate-bool = type :true|:false|filenotfound::exception
+
+    maybe x = type x|:nothing
+
+    person = type name::string age::int
+
+//    proto = protocol
+//      dosomething::int arg::string
+
+//    proto-implementation =
+//      type
+//        implementing proto
+//          dosomething p arg = something
+
+//    nonempty-list x::list=type
+//      where
+//        any x
+)

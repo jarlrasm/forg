@@ -1,0 +1,13 @@
+hellosomeone = module
+(
+  import core
+  where
+    bool = type :true|:false
+    person = type name::string age::int greetable::bool
+
+    main world::world=
+      debug name::person <=(someone (first (console-arguments world)))
+      where
+        someone named=person => named, 40, bool => :true
+
+)

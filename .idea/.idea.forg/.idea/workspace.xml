@@ -1,0 +1,1000 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b0f0ae51-6e77-40a8-92a7-5bc162b1602c" name="Default" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="forgwriter.fs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/forgCompiler/forgwriter.fs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="234">
+              <caret line="43" column="18" lean-forward="true" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
+              <folding>
+                <marker date="1520195913065" expanded="true" signature="17:6974" ph=" ..." />
+                <marker date="1520195913065" expanded="true" signature="23:159" ph="..." />
+                <marker date="1520195913065" expanded="true" signature="286:1230" ph="= ..." />
+                <marker date="1520195913065" expanded="true" signature="677:1078" ph=" ..." />
+                <marker date="1520195913065" expanded="true" signature="702:1035" ph=" -&gt; ..." />
+                <marker date="1520195913065" expanded="true" signature="1270:1365" ph=" = ..." />
+                <marker date="1520195913065" expanded="true" signature="1299:1365" ph=" ..." />
+                <marker date="1520195913065" expanded="true" signature="1423:1883" ph=" : System.Type= ..." />
+                <marker date="1520195913065" expanded="true" signature="1458:1883" ph=" ..." />
+                <marker date="1520195913065" expanded="true" signature="1549:1829" ph="-&gt;  ..." />
+                <marker date="1520195913065" expanded="true" signature="1638:1829" ph=" ..." />
+                <marker date="1520195913065" expanded="true" signature="1666:1719" ph=" -&gt; ..." />
+                <marker date="1520195913065" expanded="true" signature="1966:3176" ph="= ..." />
+                <marker date="1520195913065" expanded="true" signature="1987:3176" ph=" ..." />
+                <marker date="1520195913065" expanded="true" signature="2013:2563" ph="-&gt; ..." />
+                <marker date="1520195913065" expanded="true" signature="2075:2563" ph=" then ..." />
+                <marker date="1520195913065" expanded="true" signature="2585:2949" ph="-&gt;  ..." />
+                <marker date="1520195913065" expanded="true" signature="2674:2949" ph=" ..." />
+                <marker date="1520195913065" expanded="true" signature="2702:2824" ph=" -&gt; ..." />
+                <marker date="1520195913065" expanded="true" signature="2974:3176" ph="-&gt;  ..." />
+                <marker date="1520195913065" expanded="true" signature="3269:6795" ph=":Option&lt;Symbol&gt;=    ..." />
+                <marker date="1520195913065" expanded="true" signature="3387:6795" ph=" ..." />
+                <marker date="1520195913065" expanded="true" signature="3446:5119" ph="-&gt; ..." />
+                <marker date="1520195913065" expanded="true" signature="3523:5063" ph=" -&gt; ..." />
+                <marker date="1520195913065" expanded="true" signature="3670:3822" ph=" =  Thread.GetDomain().DefineDynamicAssembly(assemblyName, ..." />
+                <marker date="1520195913065" expanded="true" signature="3946:4125" ph=" = modl.DefineType(assignment.Name, ..." />
+                <marker date="1520195913065" expanded="true" signature="4152:4367" ph=" = (List.map (fun innerAssignment -&gt; writeAssignment innerAssignment typeBuilder context) assignment.Where) ..." />
+                <marker date="1520195913065" expanded="true" signature="4506:5063" ph=" then ..." />
+                <marker date="1520195913065" expanded="true" signature="5167:6795" ph=" -&gt;  ..." />
+                <marker date="1520195913065" expanded="true" signature="5399:5618" ph=" = List.map (fun innerAssignment -&gt; writeAssignment innerAssignment typeBuilder context) assignment.Where ..." />
+                <marker date="1520195913065" expanded="true" signature="6851:6974" ph=":unit=   ..." />
+                <marker date="1520195913065" expanded="true" signature="6864:6945" ph="for assignment in code do ..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ForgTypes.fs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Interfaces/ForgTypes.fs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="511">
+              <caret line="36" column="32" lean-forward="false" selection-start-line="36" selection-start-column="32" selection-end-line="36" selection-end-column="32" />
+              <folding>
+                <marker date="1520194793300" expanded="true" signature="16:1049" ph=" ..." />
+                <marker date="1520194793300" expanded="false" signature="23:38" ph="..." />
+                <marker date="1520194793300" expanded="true" signature="55:95" ph="= ..." />
+                <marker date="1520194793300" expanded="true" signature="118:141" ph="= ..." />
+                <marker date="1520194793300" expanded="true" signature="172:268" ph=" = ..." />
+                <marker date="1520194793300" expanded="true" signature="310:384" ph=" = ..." />
+                <marker date="1520194793300" expanded="true" signature="421:497" ph=" = ..." />
+                <marker date="1520194793300" expanded="true" signature="521:858" ph="(data:'a) = ..." />
+                <marker date="1520194793300" expanded="true" signature="608:858" ph="  with ..." />
+                <marker date="1520194793300" expanded="true" signature="883:1049" ph=") = ..." />
+                <marker date="1520194793300" expanded="true" signature="962:1049" ph="= ..." />
+                <marker date="1520194793300" expanded="true" signature="995:1028" ph=" then ..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Debug.cs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ForgCore/Debug.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="324">
+              <caret line="19" column="17" lean-forward="false" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
+              <folding>
+                <marker date="1520191533662" expanded="false" signature="6:49" ph="..." />
+                <marker date="1520191533662" expanded="true" signature="69:964" ph="{...}" />
+                <marker date="1520191533662" expanded="true" signature="118:962" ph="{...}" />
+                <marker date="1520191533662" expanded="true" signature="420:947" ph="{...}" />
+                <marker date="1520191533662" expanded="true" signature="594:806" ph="{...}" />
+                <marker date="1520191533662" expanded="true" signature="669:789" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Context.fs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Interfaces/Context.fs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="118">
+              <caret line="8" column="28" lean-forward="false" selection-start-line="8" selection-start-column="28" selection-end-line="8" selection-end-column="28" />
+              <folding>
+                <marker date="1520192519242" expanded="true" signature="18:1123" ph=" ..." />
+                <marker date="1520192519242" expanded="true" signature="25:67" ph="..." />
+                <marker date="1520192519242" expanded="true" signature="77:136" ph="=  ..." />
+                <marker date="1520192519242" expanded="true" signature="82:136" ph="SystemType of System.Type  ..." />
+                <marker date="1520192519242" expanded="true" signature="296:798" ph="= ..." />
+                <marker date="1520192519242" expanded="true" signature="315:790" ph=" ..." />
+                <marker date="1520192519242" expanded="true" signature="511:661" ph="-&gt; (x,x.GetNestedTypes()   ..." />
+                <marker date="1520192519242" expanded="true" signature="975:1123" ph="= ..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="helloworld.forg" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/forg/tests/helloworld.forg">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="5" column="1" lean-forward="false" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="forgparser.fs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/forgCompiler/forgparser.fs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="560">
+              <caret line="73" column="39" lean-forward="false" selection-start-line="73" selection-start-column="39" selection-end-line="73" selection-end-column="39" />
+              <folding>
+                <marker date="1519980962966" expanded="true" signature="17:3736" ph=" ..." />
+                <marker date="1519980962966" expanded="false" signature="24:40" ph="..." />
+                <marker date="1519980962966" expanded="true" signature="223:730" ph=" : Parser&lt;string&gt; =  ..." />
+                <marker date="1519980962966" expanded="true" signature="409:730" ph=" (IdentifierOptions( ..." />
+                <marker date="1519980962966" expanded="true" signature="450:728" ph="isAsciiIdStart = isAsciiIdStart, ..." />
+                <marker date="1519980962966" expanded="true" signature="748:1292" ph=" = ..." />
+                <marker date="1519980962966" expanded="true" signature="843:1193" ph=" = pstring &quot;\\&quot; &gt;&gt;. (anyOf &quot;\\nrt\&quot;&quot; |&gt;&gt; function ..." />
+                <marker date="1519980962966" expanded="true" signature="1381:1579" ph=":Parser&lt;FunctionCall&gt; = (pipe2 (spaces&gt;&gt;. pstring &quot;(&quot; &gt;&gt;. spaces &gt;&gt;. expression .&gt;&gt; spaces) ((opt expression) .&gt;&gt; spaces .&gt;&gt; pstring &quot;)&quot; .&gt;&gt; spaces)  (fun f arg-&gt;  ..." />
+                <marker date="1519980962966" expanded="true" signature="1598:1740" ph=": Parser&lt;Reference&gt; = ..." />
+                <marker date="1519980962966" expanded="true" signature="2023:2179" ph=" : Parser&lt;List&lt;FullAssignment&gt;&gt; =  ..." />
+                <marker date="1519980962966" expanded="true" signature="2425:2637" ph=" : Parser&lt;Assignment&gt; =  ..." />
+                <marker date="1519980962966" expanded="true" signature="2534:2635" ph=" exp -&gt;  ..." />
+                <marker date="1519980962966" expanded="true" signature="2570:2635" ph=" {Parameter = arg; ..." />
+                <marker date="1519980962966" expanded="true" signature="2666:2981" ph=" : Parser&lt;Assignment&gt; =  ..." />
+                <marker date="1519980962966" expanded="true" signature="2768:2844" ph=" -&gt;  ..." />
+                <marker date="1519980962966" expanded="true" signature="2898:2978" ph=" -&gt;  ..." />
+                <marker date="1519980962966" expanded="true" signature="3281:3673" ph=" assignment where -&gt;  ..." />
+                <marker date="1519980962966" expanded="true" signature="3340:3672" ph="FullAssignment.Name = name; ..." />
+                <marker date="1519980962966" expanded="true" signature="3563:3672" ph=" ..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="World.cs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ForgCore/World.cs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="234">
+              <caret line="13" column="55" lean-forward="false" selection-start-line="13" selection-start-column="55" selection-end-line="13" selection-end-column="55" />
+              <folding>
+                <marker date="1520191533646" expanded="true" signature="6:49" ph="..." />
+                <marker date="1520191533646" expanded="true" signature="69:1320" ph="{...}" />
+                <marker date="1520191533646" expanded="true" signature="117:1318" ph="{...}" />
+                <marker date="1520191533646" expanded="true" signature="369:565" ph="{...}" />
+                <marker date="1520191533646" expanded="true" signature="632:1312" ph="{...}" />
+                <marker date="1520191533646" expanded="true" signature="830:894" ph="{...}" />
+                <marker date="1520191533646" expanded="true" signature="1023:1207" ph="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Program.fs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/forg/Program.fs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="72">
+              <caret line="4" column="25" lean-forward="false" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
+              <folding>
+                <marker date="1519997084217" expanded="true" signature="0:405" ph="open FParsec ..." />
+                <marker date="1519997084217" expanded="true" signature="39:95" ph=" = ..." />
+                <marker date="1519997084217" expanded="true" signature="124:373" ph=" = ..." />
+                <marker date="1519997084217" expanded="true" signature="233:362" ph=" ..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>print</find>
+      <find>ForgLambda</find>
+      <find>buildParameterlessFuncFromSymbol</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>Console.Writeline</replace>
+      <replace>Console.WriteLine</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/forg" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/87/021f066c/AssemblyBuilder.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/Interfaces/AssemblyInfo.fs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/b5/2b758a1c/Assembly.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/Interfaces/Context.fs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/2b/6cd09a85/MethodAttributes.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/Interfaces/ForgTypes.fs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Interfaces/Ast.fs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/ea/6b67e9f7/TypeInfo.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/forgCompiler/forgparser.fs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/forgCompiler/forgwriter.fs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/fd/ed990730/TypeBuilder.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/forg/Program.fs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/ba/9730b644/ModuleBuilder.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/ForgCore/World.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/1d/540072dd/Type.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/ForgCore/Debug.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/forg/tests/hellosomeoneforg.forg" />
+        <option value="$PROJECT_DIR$/forg/tests/nativecall.forg" />
+        <option value="$PROJECT_DIR$/forg/tests/types.forg" />
+        <option value="$PROJECT_DIR$/forg/forgparser.fs" />
+        <option value="$PROJECT_DIR$/forg/tests/lambda.forg" />
+        <option value="$PROJECT_DIR$/forg/forgwriter.fs" />
+        <option value="$PROJECT_DIR$/forg/tests/helloworld.forg" />
+        <option value="$PROJECT_DIR$/forg/Core/world.fs" />
+        <option value="$PROJECT_DIR$/ForgCore/Class1.cs" />
+        <option value="$PROJECT_DIR$/Interfaces/Interfaces.fs" />
+        <option value="$PROJECT_DIR$/forgCompiler/forgparser.fs" />
+        <option value="$PROJECT_DIR$/Interfaces/Ast.fs" />
+        <option value="$PROJECT_DIR$/Interfaces/Interfaces.fsproj" />
+        <option value="$PROJECT_DIR$/forg/Program.fs" />
+        <option value="$PROJECT_DIR$/ForgCore/ForgHelper.cs" />
+        <option value="$PROJECT_DIR$/ForgCore/World.cs" />
+        <option value="$PROJECT_DIR$/ForgCore/Debug.cs" />
+        <option value="$PROJECT_DIR$/Interfaces/Context.fs" />
+        <option value="$PROJECT_DIR$/Interfaces/ForgTypes.fs" />
+        <option value="$PROJECT_DIR$/forgCompiler/forgwriter.fs" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="2114" />
+    <option name="y" value="119" />
+    <option name="width" value="2055" />
+    <option name="height" value="1152" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator currentView="SolutionExplorer" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scratches" />
+      <pane id="SolutionExplorer">
+        <subPane>
+          <expand>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="forg (4 projects)" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="forg (4 projects)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Interfaces" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+        <option name="show-file-system" value="false" />
+        <option name="show-all-items" value="false" />
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/forg/helloworld.exe" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="Default" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/forg/bin/Debug/forg.exe" />
+      <option name="PROGRAM_PARAMETERS" value="../../tests/helloworld.forg  " />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/forg/bin/Debug" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <envs />
+      <option name="USE_MONO" value="0" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/forg/forg.fsproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="Console" />
+      <option name="PROJECT_TFM" value=".NETFramework,Version=v4.6.2" />
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b0f0ae51-6e77-40a8-92a7-5bc162b1602c" name="Default" comment="" />
+      <created>1519904660927</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1519904660927</updated>
+      <workItem from="1519904662265" duration="9195000" />
+      <workItem from="1519927373615" duration="6865000" />
+      <workItem from="1519977505344" duration="32004000" />
+      <workItem from="1520186697153" duration="9298000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="57362000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="2114" y="119" width="2055" height="1152" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Errors In Solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3206278" sideWeight="0.5028777" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Unit Tests" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32973805" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.321394" sideWeight="0.4971223" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22496147" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17031631" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2825458" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297975" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39984593" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="14" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/forgCompiler/forgwriter.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1520195913065" expanded="true" signature="17:6974" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="23:159" ph="..." />
+            <marker date="1520195913065" expanded="true" signature="286:1230" ph="= ..." />
+            <marker date="1520195913065" expanded="true" signature="677:1078" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="702:1035" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="1270:1365" ph=" = ..." />
+            <marker date="1520195913065" expanded="true" signature="1299:1365" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="1423:1883" ph=" : System.Type= ..." />
+            <marker date="1520195913065" expanded="true" signature="1458:1883" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="1549:1829" ph="-&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="1638:1829" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="1666:1719" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="1966:3176" ph="= ..." />
+            <marker date="1520195913065" expanded="true" signature="1987:3176" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="2013:2563" ph="-&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="2075:2563" ph=" then ..." />
+            <marker date="1520195913065" expanded="true" signature="2585:2949" ph="-&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="2674:2949" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="2702:2824" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="2974:3176" ph="-&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="3269:6795" ph=":Option&lt;Symbol&gt;=    ..." />
+            <marker date="1520195913065" expanded="true" signature="3387:6795" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="3446:5119" ph="-&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="3523:5063" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="3670:3822" ph=" =  Thread.GetDomain().DefineDynamicAssembly(assemblyName, ..." />
+            <marker date="1520195913065" expanded="true" signature="3946:4125" ph=" = modl.DefineType(assignment.Name, ..." />
+            <marker date="1520195913065" expanded="true" signature="4152:4367" ph=" = (List.map (fun innerAssignment -&gt; writeAssignment innerAssignment typeBuilder context) assignment.Where) ..." />
+            <marker date="1520195913065" expanded="true" signature="4506:5063" ph=" then ..." />
+            <marker date="1520195913065" expanded="true" signature="5167:6795" ph=" -&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="5399:5618" ph=" = List.map (fun innerAssignment -&gt; writeAssignment innerAssignment typeBuilder context) assignment.Where ..." />
+            <marker date="1520195913065" expanded="true" signature="6851:6974" ph=":unit=   ..." />
+            <marker date="1520195913065" expanded="true" signature="6864:6945" ph="for assignment in code do ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Interfaces/ForgTypes.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="684">
+          <caret line="38" column="11" lean-forward="false" selection-start-line="38" selection-start-column="5" selection-end-line="38" selection-end-column="11" />
+          <folding>
+            <marker date="1520194793300" expanded="true" signature="16:1049" ph=" ..." />
+            <marker date="1520194793300" expanded="false" signature="23:38" ph="..." />
+            <marker date="1520194793300" expanded="true" signature="55:95" ph="= ..." />
+            <marker date="1520194793300" expanded="true" signature="118:141" ph="= ..." />
+            <marker date="1520194793300" expanded="true" signature="172:268" ph=" = ..." />
+            <marker date="1520194793300" expanded="true" signature="310:384" ph=" = ..." />
+            <marker date="1520194793300" expanded="true" signature="421:497" ph=" = ..." />
+            <marker date="1520194793300" expanded="true" signature="521:858" ph="(data:'a) = ..." />
+            <marker date="1520194793300" expanded="true" signature="608:858" ph="  with ..." />
+            <marker date="1520194793300" expanded="true" signature="883:1049" ph=") = ..." />
+            <marker date="1520194793300" expanded="true" signature="962:1049" ph="= ..." />
+            <marker date="1520194793300" expanded="true" signature="995:1028" ph=" then ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ForgCore/Debug.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="14" column="13" lean-forward="false" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+          <folding>
+            <marker date="1520191533662" expanded="false" signature="6:49" ph="..." />
+            <marker date="1520191533662" expanded="true" signature="69:964" ph="{...}" />
+            <marker date="1520191533662" expanded="true" signature="118:962" ph="{...}" />
+            <marker date="1520191533662" expanded="true" signature="420:947" ph="{...}" />
+            <marker date="1520191533662" expanded="true" signature="594:806" ph="{...}" />
+            <marker date="1520191533662" expanded="true" signature="669:789" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Interfaces/Ast.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="15" column="19" lean-forward="false" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="19" />
+          <folding>
+            <marker date="1519982055478" expanded="true" signature="10:789" ph=" ..." />
+            <marker date="1519982055478" expanded="true" signature="82:144" ph="=  ..." />
+            <marker date="1519982055478" expanded="true" signature="89:144" ph="{Name : string; ..." />
+            <marker date="1519982055478" expanded="true" signature="339:399" ph="=  ..." />
+            <marker date="1519982055478" expanded="true" signature="346:399" ph="{Parameter : Parameter; ..." />
+            <marker date="1519982055478" expanded="true" signature="430:483" ph="=  ..." />
+            <marker date="1519982055478" expanded="true" signature="437:483" ph="| ModuleKeyword ..." />
+            <marker date="1519982055478" expanded="true" signature="535:680" ph="=  ..." />
+            <marker date="1519982055478" expanded="true" signature="542:680" ph="| FunctionAssignment of FunctionAssignment ..." />
+            <marker date="1519982055478" expanded="true" signature="702:789" ph="=  ..." />
+            <marker date="1519982055478" expanded="true" signature="709:789" ph="{Name : string; ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Interfaces/Context.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="8" lean-forward="false" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
+          <folding>
+            <marker date="1520192519242" expanded="true" signature="18:1123" ph=" ..." />
+            <marker date="1520192519242" expanded="true" signature="25:67" ph="..." />
+            <marker date="1520192519242" expanded="true" signature="77:136" ph="=  ..." />
+            <marker date="1520192519242" expanded="true" signature="82:136" ph="SystemType of System.Type  ..." />
+            <marker date="1520192519242" expanded="true" signature="296:798" ph="= ..." />
+            <marker date="1520192519242" expanded="true" signature="315:790" ph=" ..." />
+            <marker date="1520192519242" expanded="true" signature="511:661" ph="-&gt; (x,x.GetNestedTypes()   ..." />
+            <marker date="1520192519242" expanded="true" signature="975:1123" ph="= ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/tests/helloworld.forg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" column="1" lean-forward="false" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forgCompiler/forgparser.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1296">
+          <caret line="73" column="39" lean-forward="false" selection-start-line="73" selection-start-column="39" selection-end-line="73" selection-end-column="39" />
+          <folding>
+            <marker date="1519980962966" expanded="true" signature="17:3736" ph=" ..." />
+            <marker date="1519980962966" expanded="false" signature="24:40" ph="..." />
+            <marker date="1519980962966" expanded="true" signature="223:730" ph=" : Parser&lt;string&gt; =  ..." />
+            <marker date="1519980962966" expanded="true" signature="409:730" ph=" (IdentifierOptions( ..." />
+            <marker date="1519980962966" expanded="true" signature="450:728" ph="isAsciiIdStart = isAsciiIdStart, ..." />
+            <marker date="1519980962966" expanded="true" signature="748:1292" ph=" = ..." />
+            <marker date="1519980962966" expanded="true" signature="843:1193" ph=" = pstring &quot;\\&quot; &gt;&gt;. (anyOf &quot;\\nrt\&quot;&quot; |&gt;&gt; function ..." />
+            <marker date="1519980962966" expanded="true" signature="1381:1579" ph=":Parser&lt;FunctionCall&gt; = (pipe2 (spaces&gt;&gt;. pstring &quot;(&quot; &gt;&gt;. spaces &gt;&gt;. expression .&gt;&gt; spaces) ((opt expression) .&gt;&gt; spaces .&gt;&gt; pstring &quot;)&quot; .&gt;&gt; spaces)  (fun f arg-&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="1598:1740" ph=": Parser&lt;Reference&gt; = ..." />
+            <marker date="1519980962966" expanded="true" signature="2023:2179" ph=" : Parser&lt;List&lt;FullAssignment&gt;&gt; =  ..." />
+            <marker date="1519980962966" expanded="true" signature="2425:2637" ph=" : Parser&lt;Assignment&gt; =  ..." />
+            <marker date="1519980962966" expanded="true" signature="2534:2635" ph=" exp -&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="2570:2635" ph=" {Parameter = arg; ..." />
+            <marker date="1519980962966" expanded="true" signature="2666:2981" ph=" : Parser&lt;Assignment&gt; =  ..." />
+            <marker date="1519980962966" expanded="true" signature="2768:2844" ph=" -&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="2898:2978" ph=" -&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="3281:3673" ph=" assignment where -&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="3340:3672" ph="FullAssignment.Name = name; ..." />
+            <marker date="1519980962966" expanded="true" signature="3563:3672" ph=" ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ForgCore/World.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="20" lean-forward="false" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
+          <folding>
+            <marker date="1520191533646" expanded="true" signature="6:49" ph="..." />
+            <marker date="1520191533646" expanded="true" signature="69:1320" ph="{...}" />
+            <marker date="1520191533646" expanded="true" signature="117:1318" ph="{...}" />
+            <marker date="1520191533646" expanded="true" signature="369:565" ph="{...}" />
+            <marker date="1520191533646" expanded="true" signature="632:1312" ph="{...}" />
+            <marker date="1520191533646" expanded="true" signature="830:894" ph="{...}" />
+            <marker date="1520191533646" expanded="true" signature="1023:1207" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/Program.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="25" lean-forward="false" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
+          <folding>
+            <marker date="1519997084217" expanded="true" signature="0:405" ph="open FParsec ..." />
+            <marker date="1519997084217" expanded="true" signature="39:95" ph=" = ..." />
+            <marker date="1519997084217" expanded="true" signature="124:373" ph=" = ..." />
+            <marker date="1519997084217" expanded="true" signature="233:362" ph=" ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/tests/lambda.forg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/Core/world.fs" />
+    <entry file="file://$PROJECT_DIR$/forgCompiler/forgparser.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="10" column="23" lean-forward="false" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
+          <folding>
+            <marker date="1519980962966" expanded="true" signature="17:3736" ph=" ..." />
+            <marker date="1519980962966" expanded="false" signature="24:40" ph="..." />
+            <marker date="1519980962966" expanded="true" signature="223:730" ph=" : Parser&lt;string&gt; =  ..." />
+            <marker date="1519980962966" expanded="true" signature="409:730" ph=" (IdentifierOptions( ..." />
+            <marker date="1519980962966" expanded="true" signature="450:728" ph="isAsciiIdStart = isAsciiIdStart, ..." />
+            <marker date="1519980962966" expanded="true" signature="748:1292" ph=" = ..." />
+            <marker date="1519980962966" expanded="true" signature="843:1193" ph=" = pstring &quot;\\&quot; &gt;&gt;. (anyOf &quot;\\nrt\&quot;&quot; |&gt;&gt; function ..." />
+            <marker date="1519980962966" expanded="true" signature="1381:1579" ph=":Parser&lt;FunctionCall&gt; = (pipe2 (spaces&gt;&gt;. pstring &quot;(&quot; &gt;&gt;. spaces &gt;&gt;. expression .&gt;&gt; spaces) ((opt expression) .&gt;&gt; spaces .&gt;&gt; pstring &quot;)&quot; .&gt;&gt; spaces)  (fun f arg-&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="1598:1740" ph=": Parser&lt;Reference&gt; = ..." />
+            <marker date="1519980962966" expanded="true" signature="2023:2179" ph=" : Parser&lt;List&lt;FullAssignment&gt;&gt; =  ..." />
+            <marker date="1519980962966" expanded="true" signature="2425:2637" ph=" : Parser&lt;Assignment&gt; =  ..." />
+            <marker date="1519980962966" expanded="true" signature="2534:2635" ph=" exp -&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="2570:2635" ph=" {Parameter = arg; ..." />
+            <marker date="1519980962966" expanded="true" signature="2666:2981" ph=" : Parser&lt;Assignment&gt; =  ..." />
+            <marker date="1519980962966" expanded="true" signature="2768:2844" ph=" -&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="2898:2978" ph=" -&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="3281:3673" ph=" assignment where -&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="3340:3672" ph="FullAssignment.Name = name; ..." />
+            <marker date="1519980962966" expanded="true" signature="3563:3672" ph=" ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/tests/helloworld.forg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="6" lean-forward="false" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forgCompiler/forgwriter.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="22" column="31" lean-forward="false" selection-start-line="22" selection-start-column="31" selection-end-line="22" selection-end-column="31" />
+          <folding>
+            <marker date="1520195913065" expanded="true" signature="17:6974" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="23:159" ph="..." />
+            <marker date="1520195913065" expanded="true" signature="286:1230" ph="= ..." />
+            <marker date="1520195913065" expanded="true" signature="677:1078" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="702:1035" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="1270:1365" ph=" = ..." />
+            <marker date="1520195913065" expanded="true" signature="1299:1365" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="1423:1883" ph=" : System.Type= ..." />
+            <marker date="1520195913065" expanded="true" signature="1458:1883" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="1549:1829" ph="-&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="1638:1829" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="1666:1719" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="1966:3176" ph="= ..." />
+            <marker date="1520195913065" expanded="true" signature="1987:3176" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="2013:2563" ph="-&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="2075:2563" ph=" then ..." />
+            <marker date="1520195913065" expanded="true" signature="2585:2949" ph="-&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="2674:2949" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="2702:2824" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="2974:3176" ph="-&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="3269:6795" ph=":Option&lt;Symbol&gt;=    ..." />
+            <marker date="1520195913065" expanded="true" signature="3387:6795" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="3446:5119" ph="-&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="3523:5063" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="3670:3822" ph=" =  Thread.GetDomain().DefineDynamicAssembly(assemblyName, ..." />
+            <marker date="1520195913065" expanded="true" signature="3946:4125" ph=" = modl.DefineType(assignment.Name, ..." />
+            <marker date="1520195913065" expanded="true" signature="4152:4367" ph=" = (List.map (fun innerAssignment -&gt; writeAssignment innerAssignment typeBuilder context) assignment.Where) ..." />
+            <marker date="1520195913065" expanded="true" signature="4506:5063" ph=" then ..." />
+            <marker date="1520195913065" expanded="true" signature="5167:6795" ph=" -&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="5399:5618" ph=" = List.map (fun innerAssignment -&gt; writeAssignment innerAssignment typeBuilder context) assignment.Where ..." />
+            <marker date="1520195913065" expanded="true" signature="6851:6974" ph=":unit=   ..." />
+            <marker date="1520195913065" expanded="true" signature="6864:6945" ph="for assignment in code do ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/tests/lambda.forg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/tests/helloworld.forg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" column="1" lean-forward="true" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forgCompiler/forgwriter.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="468">
+          <caret line="26" column="53" lean-forward="true" selection-start-line="26" selection-start-column="53" selection-end-line="26" selection-end-column="53" />
+          <folding>
+            <marker date="1520195913065" expanded="true" signature="17:6974" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="23:159" ph="..." />
+            <marker date="1520195913065" expanded="true" signature="286:1230" ph="= ..." />
+            <marker date="1520195913065" expanded="true" signature="677:1078" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="702:1035" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="1270:1365" ph=" = ..." />
+            <marker date="1520195913065" expanded="true" signature="1299:1365" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="1423:1883" ph=" : System.Type= ..." />
+            <marker date="1520195913065" expanded="true" signature="1458:1883" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="1549:1829" ph="-&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="1638:1829" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="1666:1719" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="1966:3176" ph="= ..." />
+            <marker date="1520195913065" expanded="true" signature="1987:3176" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="2013:2563" ph="-&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="2075:2563" ph=" then ..." />
+            <marker date="1520195913065" expanded="true" signature="2585:2949" ph="-&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="2674:2949" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="2702:2824" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="2974:3176" ph="-&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="3269:6795" ph=":Option&lt;Symbol&gt;=    ..." />
+            <marker date="1520195913065" expanded="true" signature="3387:6795" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="3446:5119" ph="-&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="3523:5063" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="3670:3822" ph=" =  Thread.GetDomain().DefineDynamicAssembly(assemblyName, ..." />
+            <marker date="1520195913065" expanded="true" signature="3946:4125" ph=" = modl.DefineType(assignment.Name, ..." />
+            <marker date="1520195913065" expanded="true" signature="4152:4367" ph=" = (List.map (fun innerAssignment -&gt; writeAssignment innerAssignment typeBuilder context) assignment.Where) ..." />
+            <marker date="1520195913065" expanded="true" signature="4506:5063" ph=" then ..." />
+            <marker date="1520195913065" expanded="true" signature="5167:6795" ph=" -&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="5399:5618" ph=" = List.map (fun innerAssignment -&gt; writeAssignment innerAssignment typeBuilder context) assignment.Where ..." />
+            <marker date="1520195913065" expanded="true" signature="6851:6974" ph=":unit=   ..." />
+            <marker date="1520195913065" expanded="true" signature="6864:6945" ph="for assignment in code do ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/tests/nativecall.forg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="13" lean-forward="false" selection-start-line="0" selection-start-column="13" selection-end-line="0" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/tests/types.forg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="8" lean-forward="false" selection-start-line="0" selection-start-column="8" selection-end-line="0" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/tests/hellosomeoneforg.forg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="9" lean-forward="true" selection-start-line="0" selection-start-column="9" selection-end-line="0" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/tests/lambda.forg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/ba/9730b644/ModuleBuilder.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="249">
+          <caret line="842" column="12" lean-forward="false" selection-start-line="842" selection-start-column="12" selection-end-line="842" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/2b/6cd09a85/MethodAttributes.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="468">
+          <caret line="26" column="4" lean-forward="false" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/b5/2b758a1c/Assembly.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="27" column="24" lean-forward="false" selection-start-line="27" selection-start-column="24" selection-end-line="27" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/87/021f066c/AssemblyBuilder.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="23" column="45" lean-forward="false" selection-start-line="23" selection-start-column="45" selection-end-line="23" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forgCompiler/Library.fs" />
+    <entry file="file://$PROJECT_DIR$/forg/Core/world.fs" />
+    <entry file="file://$PROJECT_DIR$/Interfaces/Library.fs" />
+    <entry file="file://$PROJECT_DIR$/Interfaces/Interfaces.fsproj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="48" column="38" lean-forward="false" selection-start-line="48" selection-start-column="38" selection-end-line="48" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Interfaces/AssemblyInfo.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-54">
+          <caret line="0" column="10" lean-forward="false" selection-start-line="0" selection-start-column="10" selection-end-line="0" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/ea/6b67e9f7/TypeInfo.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="14" column="37" lean-forward="false" selection-start-line="14" selection-start-column="37" selection-end-line="14" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/fd/ed990730/TypeBuilder.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="353" column="23" lean-forward="false" selection-start-line="353" selection-start-column="23" selection-end-line="353" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ForgCore/ForgHelper.cs" />
+    <entry file="file://$PROJECT_DIR$/Interfaces/Ast.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="21" lean-forward="false" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
+          <folding>
+            <marker date="1519982055478" expanded="true" signature="10:789" ph=" ..." />
+            <marker date="1519982055478" expanded="true" signature="82:144" ph="=  ..." />
+            <marker date="1519982055478" expanded="true" signature="89:144" ph="{Name : string; ..." />
+            <marker date="1519982055478" expanded="true" signature="339:399" ph="=  ..." />
+            <marker date="1519982055478" expanded="true" signature="346:399" ph="{Parameter : Parameter; ..." />
+            <marker date="1519982055478" expanded="true" signature="430:483" ph="=  ..." />
+            <marker date="1519982055478" expanded="true" signature="437:483" ph="| ModuleKeyword ..." />
+            <marker date="1519982055478" expanded="true" signature="535:680" ph="=  ..." />
+            <marker date="1519982055478" expanded="true" signature="542:680" ph="| FunctionAssignment of FunctionAssignment ..." />
+            <marker date="1519982055478" expanded="true" signature="702:789" ph="=  ..." />
+            <marker date="1519982055478" expanded="true" signature="709:789" ph="{Name : string; ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/Program.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="25" lean-forward="false" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
+          <folding>
+            <marker date="1519997084217" expanded="true" signature="0:405" ph="open FParsec ..." />
+            <marker date="1519997084217" expanded="true" signature="39:95" ph=" = ..." />
+            <marker date="1519997084217" expanded="true" signature="124:373" ph=" = ..." />
+            <marker date="1519997084217" expanded="true" signature="233:362" ph=" ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forg/tests/helloworld.forg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" column="1" lean-forward="false" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forgCompiler/forgparser.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="560">
+          <caret line="73" column="39" lean-forward="false" selection-start-line="73" selection-start-column="39" selection-end-line="73" selection-end-column="39" />
+          <folding>
+            <marker date="1519980962966" expanded="true" signature="17:3736" ph=" ..." />
+            <marker date="1519980962966" expanded="false" signature="24:40" ph="..." />
+            <marker date="1519980962966" expanded="true" signature="223:730" ph=" : Parser&lt;string&gt; =  ..." />
+            <marker date="1519980962966" expanded="true" signature="409:730" ph=" (IdentifierOptions( ..." />
+            <marker date="1519980962966" expanded="true" signature="450:728" ph="isAsciiIdStart = isAsciiIdStart, ..." />
+            <marker date="1519980962966" expanded="true" signature="748:1292" ph=" = ..." />
+            <marker date="1519980962966" expanded="true" signature="843:1193" ph=" = pstring &quot;\\&quot; &gt;&gt;. (anyOf &quot;\\nrt\&quot;&quot; |&gt;&gt; function ..." />
+            <marker date="1519980962966" expanded="true" signature="1381:1579" ph=":Parser&lt;FunctionCall&gt; = (pipe2 (spaces&gt;&gt;. pstring &quot;(&quot; &gt;&gt;. spaces &gt;&gt;. expression .&gt;&gt; spaces) ((opt expression) .&gt;&gt; spaces .&gt;&gt; pstring &quot;)&quot; .&gt;&gt; spaces)  (fun f arg-&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="1598:1740" ph=": Parser&lt;Reference&gt; = ..." />
+            <marker date="1519980962966" expanded="true" signature="2023:2179" ph=" : Parser&lt;List&lt;FullAssignment&gt;&gt; =  ..." />
+            <marker date="1519980962966" expanded="true" signature="2425:2637" ph=" : Parser&lt;Assignment&gt; =  ..." />
+            <marker date="1519980962966" expanded="true" signature="2534:2635" ph=" exp -&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="2570:2635" ph=" {Parameter = arg; ..." />
+            <marker date="1519980962966" expanded="true" signature="2666:2981" ph=" : Parser&lt;Assignment&gt; =  ..." />
+            <marker date="1519980962966" expanded="true" signature="2768:2844" ph=" -&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="2898:2978" ph=" -&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="3281:3673" ph=" assignment where -&gt;  ..." />
+            <marker date="1519980962966" expanded="true" signature="3340:3672" ph="FullAssignment.Name = name; ..." />
+            <marker date="1519980962966" expanded="true" signature="3563:3672" ph=" ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ForgCore/World.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="13" column="55" lean-forward="false" selection-start-line="13" selection-start-column="55" selection-end-line="13" selection-end-column="55" />
+          <folding>
+            <marker date="1520191533646" expanded="true" signature="6:49" ph="..." />
+            <marker date="1520191533646" expanded="true" signature="69:1320" ph="{...}" />
+            <marker date="1520191533646" expanded="true" signature="117:1318" ph="{...}" />
+            <marker date="1520191533646" expanded="true" signature="369:565" ph="{...}" />
+            <marker date="1520191533646" expanded="true" signature="632:1312" ph="{...}" />
+            <marker date="1520191533646" expanded="true" signature="830:894" ph="{...}" />
+            <marker date="1520191533646" expanded="true" signature="1023:1207" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ForgCore/Debug.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="19" column="17" lean-forward="false" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
+          <folding>
+            <marker date="1520191533662" expanded="false" signature="6:49" ph="..." />
+            <marker date="1520191533662" expanded="true" signature="69:964" ph="{...}" />
+            <marker date="1520191533662" expanded="true" signature="118:962" ph="{...}" />
+            <marker date="1520191533662" expanded="true" signature="420:947" ph="{...}" />
+            <marker date="1520191533662" expanded="true" signature="594:806" ph="{...}" />
+            <marker date="1520191533662" expanded="true" signature="669:789" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Interfaces/Context.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="118">
+          <caret line="8" column="28" lean-forward="false" selection-start-line="8" selection-start-column="28" selection-end-line="8" selection-end-column="28" />
+          <folding>
+            <marker date="1520192519242" expanded="true" signature="18:1123" ph=" ..." />
+            <marker date="1520192519242" expanded="true" signature="25:67" ph="..." />
+            <marker date="1520192519242" expanded="true" signature="77:136" ph="=  ..." />
+            <marker date="1520192519242" expanded="true" signature="82:136" ph="SystemType of System.Type  ..." />
+            <marker date="1520192519242" expanded="true" signature="296:798" ph="= ..." />
+            <marker date="1520192519242" expanded="true" signature="315:790" ph=" ..." />
+            <marker date="1520192519242" expanded="true" signature="511:661" ph="-&gt; (x,x.GetNestedTypes()   ..." />
+            <marker date="1520192519242" expanded="true" signature="975:1123" ph="= ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/A07D6BF4-84A5-4DA2-8616-91DF910339B1/1d/540072dd/Type.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-964">
+          <caret line="460" column="22" lean-forward="false" selection-start-line="460" selection-start-column="22" selection-end-line="460" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Interfaces/ForgTypes.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="511">
+          <caret line="36" column="32" lean-forward="false" selection-start-line="36" selection-start-column="32" selection-end-line="36" selection-end-column="32" />
+          <folding>
+            <marker date="1520194793300" expanded="true" signature="16:1049" ph=" ..." />
+            <marker date="1520194793300" expanded="false" signature="23:38" ph="..." />
+            <marker date="1520194793300" expanded="true" signature="55:95" ph="= ..." />
+            <marker date="1520194793300" expanded="true" signature="118:141" ph="= ..." />
+            <marker date="1520194793300" expanded="true" signature="172:268" ph=" = ..." />
+            <marker date="1520194793300" expanded="true" signature="310:384" ph=" = ..." />
+            <marker date="1520194793300" expanded="true" signature="421:497" ph=" = ..." />
+            <marker date="1520194793300" expanded="true" signature="521:858" ph="(data:'a) = ..." />
+            <marker date="1520194793300" expanded="true" signature="608:858" ph="  with ..." />
+            <marker date="1520194793300" expanded="true" signature="883:1049" ph=") = ..." />
+            <marker date="1520194793300" expanded="true" signature="962:1049" ph="= ..." />
+            <marker date="1520194793300" expanded="true" signature="995:1028" ph=" then ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forgCompiler/forgwriter.fs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="43" column="18" lean-forward="true" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
+          <folding>
+            <marker date="1520195913065" expanded="true" signature="17:6974" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="23:159" ph="..." />
+            <marker date="1520195913065" expanded="true" signature="286:1230" ph="= ..." />
+            <marker date="1520195913065" expanded="true" signature="677:1078" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="702:1035" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="1270:1365" ph=" = ..." />
+            <marker date="1520195913065" expanded="true" signature="1299:1365" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="1423:1883" ph=" : System.Type= ..." />
+            <marker date="1520195913065" expanded="true" signature="1458:1883" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="1549:1829" ph="-&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="1638:1829" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="1666:1719" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="1966:3176" ph="= ..." />
+            <marker date="1520195913065" expanded="true" signature="1987:3176" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="2013:2563" ph="-&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="2075:2563" ph=" then ..." />
+            <marker date="1520195913065" expanded="true" signature="2585:2949" ph="-&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="2674:2949" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="2702:2824" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="2974:3176" ph="-&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="3269:6795" ph=":Option&lt;Symbol&gt;=    ..." />
+            <marker date="1520195913065" expanded="true" signature="3387:6795" ph=" ..." />
+            <marker date="1520195913065" expanded="true" signature="3446:5119" ph="-&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="3523:5063" ph=" -&gt; ..." />
+            <marker date="1520195913065" expanded="true" signature="3670:3822" ph=" =  Thread.GetDomain().DefineDynamicAssembly(assemblyName, ..." />
+            <marker date="1520195913065" expanded="true" signature="3946:4125" ph=" = modl.DefineType(assignment.Name, ..." />
+            <marker date="1520195913065" expanded="true" signature="4152:4367" ph=" = (List.map (fun innerAssignment -&gt; writeAssignment innerAssignment typeBuilder context) assignment.Where) ..." />
+            <marker date="1520195913065" expanded="true" signature="4506:5063" ph=" then ..." />
+            <marker date="1520195913065" expanded="true" signature="5167:6795" ph=" -&gt;  ..." />
+            <marker date="1520195913065" expanded="true" signature="5399:5618" ph=" = List.map (fun innerAssignment -&gt; writeAssignment innerAssignment typeBuilder context) assignment.Where ..." />
+            <marker date="1520195913065" expanded="true" signature="6851:6974" ph=":unit=   ..." />
+            <marker date="1520195913065" expanded="true" signature="6864:6945" ph="for assignment in code do ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

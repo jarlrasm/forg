@@ -1,0 +1,6 @@
+HelloWorld = module 
+where
+{
+  main world::World=
+    ((Debug.print "Helloworld") world)
+}

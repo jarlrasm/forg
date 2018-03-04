@@ -1,0 +1,11 @@
+lamdbatest = module 
+(
+  where
+    person = type name::string age::int
+
+    main arg=
+      debug name::person <= fn(someone arg)<=40
+      where
+        someone named= fn age=> person => named, age
+
+)
