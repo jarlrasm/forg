@@ -33,14 +33,13 @@ let GetSystemtypeFrom (symbol :Symbol) =
     
 let rec getTypeOf (exp:Expression) (context:Context) : System.Type=
      match exp with
-     | FunctionCall fcall->
-        getTypeOf fcall.Function context
+     | FunctionCall fcall-> //TODO This cannot be right
+        (getTypeOf fcall.Function context).GetMethod("get_Result").ReturnType;
 
      | Reference ref-> 
            let symbol=ForgContext.lookup context ref
            match symbol.Ref with
            | SystemType sys ->
-               printf "%A" sys
                sys
            | Parameter parameter -> 
                parameter
@@ -52,14 +51,13 @@ let rec getTypeOf (exp:Expression) (context:Context) : System.Type=
 let rec writeExpression (exp:Expression) (il:ILGenerator) (context:Context)=
      match exp with
      | FunctionCall fcall->
-        printf "%A" fcall
         if(fcall.Argument.IsSome) then
             writeExpression fcall.Function il context
+            il.Emit(OpCodes.Dup)
             writeExpression fcall.Argument.Value il context
-            let functype=typeof<ForgTypes.Helper>.GetMethod("getResult").MakeGenericMethod([|getTypeOf fcall.Function context|])
-            il.Emit(OpCodes.Callvirt, functype) 
             let functype=getTypeOf fcall.Function context
             il.Emit(OpCodes.Callvirt, functype.GetMethod("Execute"))
+            il.Emit(OpCodes.Callvirt, functype.GetMethod("get_Result",BindingFlags.FlattenHierarchy|||BindingFlags.Public|||BindingFlags.Instance))
         else
             raise (NotImplementedException "TODO")
 
@@ -76,8 +74,38 @@ let rec writeExpression (exp:Expression) (il:ILGenerator) (context:Context)=
                let constructor=(typeof<ForgTypes.ForgValue<string>>.GetConstructor([|typeof<string>|] ))
                il.Emit(OpCodes.Ldstr,str)
                il.Emit(OpCodes.Newobj, constructor)
+               let functype=typeof<ForgTypes.Helper>.GetMethod("getResult").MakeGenericMethod([|typeof<string>|])
+               il.Emit(OpCodes.Call, functype) 
 
-       
+let buildProperty (typeBuilder:TypeBuilder) (systemType:System.Type) (name:string) : PropertyBuilder=
+     let backingName="_"+name.ToLower()
+     let field = typeBuilder.DefineField(backingName,  systemType,  FieldAttributes.Private)
+     let propertyBuilder = typeBuilder.DefineProperty(name,PropertyAttributes.None,systemType,null)
+     let getSetAttr = 
+                 MethodAttributes.Public ||| MethodAttributes.SpecialName |||
+                     MethodAttributes.HideBySig
+     let getBuilder =  typeBuilder.DefineMethod("get_"+name,
+                                            getSetAttr,        
+                                            systemType,
+                                            Type.EmptyTypes)
+     
+     let ilgen = getBuilder.GetILGenerator()
+     ilgen.Emit(OpCodes.Ldarg_0)
+     ilgen.Emit(OpCodes.Ldfld, field)
+     ilgen.Emit(OpCodes.Ret)
+     let setBuilder =  typeBuilder.DefineMethod("set_"+name,
+                                            getSetAttr,     
+                                            null,
+                                            [|systemType|])
+     
+     let ilgen = setBuilder.GetILGenerator()
+     ilgen.Emit(OpCodes.Ldarg_0)
+     ilgen.Emit(OpCodes.Ldarg_1)
+     ilgen.Emit(OpCodes.Stfld, field)
+     ilgen.Emit(OpCodes.Ret)
+     propertyBuilder.SetGetMethod(getBuilder)
+     propertyBuilder.SetSetMethod(setBuilder)
+     propertyBuilder
     
 let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):Option<Symbol>=   
         Console.WriteLine ("Creating " + assignment.Name)
@@ -124,11 +152,14 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
             ilGenerator.Emit(OpCodes.Call,typeof<Object>.GetConstructor(Array.Empty()))
             ilGenerator.Emit(OpCodes.Ret)
             let argtype=GetSystemtypeFrom (ForgContext.lookup context functionAssignment.Parameter.TypeReference.Value)
+            let propertyBuilder= buildProperty nestedTypeBuilder (getTypeOf functionAssignment.Expression context) "Result" 
             let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  MethodAttributes.HideBySig ||| MethodAttributes.Public,null, [|argtype|] )
             
             let context=ForgContext.pushFrame context [{SymbolName = functionAssignment.Parameter.Name; Namespace=[]; Ref= Parameter argtype}]
-            let ilGenerator = methodBuilder.GetILGenerator()
+            let ilGenerator = methodBuilder.GetILGenerator() 
+            ilGenerator.Emit(OpCodes.Ldarg_0)
             writeExpression functionAssignment.Expression ilGenerator context
+            ilGenerator.Emit(OpCodes.Call, propertyBuilder.GetSetMethod())
             ilGenerator.Emit(OpCodes.Ret)
             let created = nestedTypeBuilder.CreateType()
             Some {SymbolName=created.Name;Namespace=[];Ref=SystemType created}

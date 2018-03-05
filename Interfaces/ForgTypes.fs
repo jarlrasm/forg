@@ -11,16 +11,18 @@ type IForgModule =
     
 type IForgLambda<'output> =
     inherit IForgType
-    abstract member HasResult: bool
-    abstract member Result: 'output
     
 type IForgParameterlessFunc<'output> =
     inherit IForgLambda<'output>
     abstract member Execute:unit->unit
+    abstract member HasResult: bool
+    abstract member Result: 'output
     
 type IForgFunc<'output, 'input> =
     inherit IForgLambda<'output>
     abstract member Execute:'input->unit
+    abstract member HasResult: bool
+    abstract member Result: 'output
     
 type ForgValue<'a>(data:'a) =
   let name=Guid.NewGuid().ToString()
