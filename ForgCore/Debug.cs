@@ -7,25 +7,25 @@ namespace ForgCore
     {
         public Ast.FullAssignment AST  => new Ast.FullAssignment("Debug",Ast.Assignment.NewParameterlessAssignment(Ast.ParameterlessAssignment.ModuleKeyword), FSharpList<Ast.FullAssignment>.Empty);
 
-        public class print : ForgTypes.IForgFunc<ForgTypes.IForgFunc<string,Core.World>, string>
+        public class print : ForgTypes.IForgFunc<ForgTypes.IForgFunc<Primitives.String,Core.World>, Primitives.String>
         {
             private bool _ran;
 
 
             public Ast.FullAssignment AST => throw new NotImplementedException();
 
-            public void Execute(string content)
+            public void Execute(Primitives.String content)
             {
-                Result = new Core.worldfunc<string>(world =>
+                Result = new Core.worldfunc<Primitives.String>(world =>
                 {
-                    Console.WriteLine(content);
+                    Console.WriteLine(content.Value);
                     return content;
                 });
 
             }
 
             public bool HasResult => _ran;
-            public ForgTypes.IForgFunc<string,Core.World> Result { get; private set; }
+            public ForgTypes.IForgFunc<Primitives.String,Core.World> Result { get; private set; }
         }
         
     }

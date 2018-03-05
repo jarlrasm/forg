@@ -59,7 +59,11 @@ let rec writeExpression (exp:Expression) (il:ILGenerator) (context:Context)=
             il.Emit(OpCodes.Callvirt, functype.GetMethod("Execute"))
             il.Emit(OpCodes.Callvirt, functype.GetMethod("get_Result",BindingFlags.FlattenHierarchy|||BindingFlags.Public|||BindingFlags.Instance))
         else
-            raise (NotImplementedException "TODO")
+            writeExpression fcall.Function il context
+            il.Emit(OpCodes.Dup)
+            let functype=getTypeOf fcall.Function context
+            il.Emit(OpCodes.Callvirt, functype.GetMethod("Execute"))
+            il.Emit(OpCodes.Callvirt, functype.GetMethod("get_Result",BindingFlags.FlattenHierarchy|||BindingFlags.Public|||BindingFlags.Instance))
 
      | Reference ref-> 
            let symbol=ForgContext.lookup context ref
@@ -74,12 +78,9 @@ let rec writeExpression (exp:Expression) (il:ILGenerator) (context:Context)=
             let symbol=ForgContext.lookup context {Name="String";Namespace=["ForgCore"]} 
             match symbol.Ref with
             | SystemType sys ->
-               printf "%A" sys
                il.Emit(OpCodes.Ldstr,str)
                let constructor=(sys.GetConstructor([|typeof<string>|]))
                il.Emit(OpCodes.Newobj, constructor)
-               let valueMethod=sys.GetMethod("get_Value")
-               il.Emit(OpCodes.Call, valueMethod) 
             | _ -> raise (InvalidRef symbol.Ref)
 
 let buildProperty (typeBuilder:TypeBuilder) (systemType:System.Type) (name:string) : PropertyBuilder=
@@ -142,11 +143,30 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
                         assemblyBuilder.Save( assignment.Name+".dll")
                         Some{SymbolName=created.Name;Namespace=[];Ref=SystemType created}
                 
-             | Expression(exp) -> None
+             | Expression expression -> 
+                let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.NestedPublic)//TODO  implement interface
+                let frame = List.map (fun innerAssignment -> writeAssignment innerAssignment typeBuilder context) assignment.Where
+                                   |> List.filter Option.isSome
+                                   |> List.map Option.get  
+                let context=ForgContext.pushFrame context frame
+                let constructorBuilder=nestedTypeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [||] )
+                let ilGenerator=constructorBuilder.GetILGenerator()
+                ilGenerator.Emit(OpCodes.Ldarg_0)
+                ilGenerator.Emit(OpCodes.Call,typeof<Object>.GetConstructor(Array.Empty()))
+                ilGenerator.Emit(OpCodes.Ret)
+                let propertyBuilder= buildProperty nestedTypeBuilder (getTypeOf expression context) "Result" 
+                let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  MethodAttributes.HideBySig ||| MethodAttributes.Public,null, [||] )
+                
+                let ilGenerator = methodBuilder.GetILGenerator() 
+                ilGenerator.Emit(OpCodes.Ldarg_0)
+                writeExpression expression ilGenerator context
+                ilGenerator.Emit(OpCodes.Call, propertyBuilder.GetSetMethod())
+                ilGenerator.Emit(OpCodes.Ret)
+                let created = nestedTypeBuilder.CreateType()
+                Some {SymbolName=created.Name;Namespace=[];Ref=SystemType created}
+                
         | FunctionAssignment functionAssignment -> 
-            //let returntype=ForgContext.lookup context functionAssignment.
-
-            let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.Public)//TODO  implement interface
+            let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.NestedPublic)//TODO  implement interface
             let frame = List.map (fun innerAssignment -> writeAssignment innerAssignment typeBuilder context) assignment.Where
                                |> List.filter Option.isSome
                                |> List.map Option.get  

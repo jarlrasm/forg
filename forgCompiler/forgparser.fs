@@ -43,8 +43,8 @@ do expressionImplementation :=   (functioncall |>> fun x -> Expression.FunctionC
 
 let assignment, assignmentImplementation= createParserForwardedToRef()
 let whereblock : Parser<List<FullAssignment>> = 
-    whereKeyword >>. spaces >>. (pstring "{") >>. spaces >>. many assignment 
-    .>> spaces .>> (pstring "}") .>> spaces
+    whereKeyword >>. spaces >>. (pstring "[") >>. spaces >>. many assignment 
+    .>> spaces .>> (pstring "]") .>> spaces
 
 let parameter : Parser<Parameter> =(pipe2 name (spaces >>. pstring "::" >>. reference) (fun name typereference -> {Name = name; TypeReference=Some typereference})) <|> (name |>> (fun x -> {Name = x; TypeReference=None})) 
 let functionassignment : Parser<Assignment> = 
@@ -62,7 +62,7 @@ let parameterlessassignment : Parser<Assignment> =
               ParameterlessAssignment(ParameterlessAssignment.Expression x))))
 
 do assignmentImplementation := (pipe3 name 
-                                    (spaces1 
+                                    (spaces
                                      >>. (parameterlessassignment 
                                           <|> functionassignment)) 
                                     (spaces >>. opt whereblock) (fun name assignment where -> 

@@ -1,6 +1,10 @@
 HelloWorld = module 
 where
-{
+[
   main world::World=
-    ((Debug.print "Helloworld") world)
-}
+    ((Debug.print (helloWorld)) world)
+    where
+    [
+        helloWorld ="Hello world!"
+    ]
+]
