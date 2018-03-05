@@ -12,6 +12,8 @@ bin
 /build/
 *.exe
 !.paket/paket.bootstrapper.exe
-
+#RiderC#
+.idea/
+*.*.iml
 
 # End of https://www.gitignore.io/api/fsharp

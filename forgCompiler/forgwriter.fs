@@ -71,11 +71,16 @@ let rec writeExpression (exp:Expression) (il:ILGenerator) (context:Context)=
                il.Emit(OpCodes.Ldarg_1)
            | _ -> raise (InvalidRef symbol.Ref)
      | StringLiteral str-> 
-               let constructor=(typeof<ForgTypes.ForgValue<string>>.GetConstructor([|typeof<string>|] ))
+            let symbol=ForgContext.lookup context {Name="String";Namespace=["ForgCore"]} 
+            match symbol.Ref with
+            | SystemType sys ->
+               printf "%A" sys
                il.Emit(OpCodes.Ldstr,str)
+               let constructor=(sys.GetConstructor([|typeof<string>|]))
                il.Emit(OpCodes.Newobj, constructor)
-               let functype=typeof<ForgTypes.Helper>.GetMethod("getResult").MakeGenericMethod([|typeof<string>|])
-               il.Emit(OpCodes.Call, functype) 
+               let valueMethod=sys.GetMethod("get_Value")
+               il.Emit(OpCodes.Call, valueMethod) 
+            | _ -> raise (InvalidRef symbol.Ref)
 
 let buildProperty (typeBuilder:TypeBuilder) (systemType:System.Type) (name:string) : PropertyBuilder=
      let backingName="_"+name.ToLower()

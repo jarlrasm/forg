@@ -9,6 +9,10 @@ type IForgType =
 type IForgModule =
     inherit IForgType
     
+type IForgPrimitive<'a> =
+    inherit IForgType
+    abstract member Value: 'a
+    
 type IForgLambda<'output> =
     inherit IForgType
     
@@ -23,17 +27,6 @@ type IForgFunc<'output, 'input> =
     abstract member Execute:'input->unit
     abstract member HasResult: bool
     abstract member Result: 'output
-    
-type ForgValue<'a>(data:'a) =
-  let name=Guid.NewGuid().ToString()
-  interface IForgParameterlessFunc<'a>  with
-    override this.Execute() = ignore()
-    override this.HasResult with get () = true
-    override this.Result with get() = data
-    override this.AST  with get() =  {Name=name;Assignment=ParameterlessAssignment ModuleKeyword;Where=List.empty}
-
-    
-
     
 type Helper() =
      static member getResult<'output>(func:IForgParameterlessFunc<'output>)=
