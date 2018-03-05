@@ -15,12 +15,32 @@ type FunctionAssignment =
 type ParameterlessAssignment = 
     | ModuleKeyword
     | Expression of Expression
-type TypeAssignment() = class end
 
+type DataType =  List<Parameter>
+
+type TypeValue =
+    {Atom : Option<string>;
+     Reference : Reference}
+     
+type TypeOption = 
+    | Atom of string
+    | Value of TypeValue
+    
+type AlgebraicType = List<TypeOption>
+and TypeDeclaration = 
+    |Primitive
+    |Algebraic of AlgebraicType
+    |Data of DataType
+    |Alias of Reference
+    
+type GenericTypeDeclaration =
+    {Parameters : List<Parameter>;
+     TypeDeclaration : TypeDeclaration}
 type Assignment = 
     | FunctionAssignment of FunctionAssignment
     | ParameterlessAssignment of ParameterlessAssignment
-    | TypeAssignment of TypeAssignment
+    | TypeDeclaration of TypeDeclaration
+    | GenericTypeDeclaration of GenericTypeDeclaration
 
 type FullAssignment = 
     {Name : string;

@@ -14,7 +14,7 @@ namespace ForgCore
             }
 
             public string Value { get; }
-            public Ast.FullAssignment AST => new Ast.FullAssignment("String",Ast.Assignment.NewTypeAssignment(new Ast.TypeAssignment()), FSharpList<Ast.FullAssignment>.Empty);
+            public Ast.FullAssignment AST => new Ast.FullAssignment("String",Ast.Assignment.NewTypeDeclaration(Ast.TypeDeclaration.Primitive), FSharpList<Ast.FullAssignment>.Empty);
         }
     }
 }

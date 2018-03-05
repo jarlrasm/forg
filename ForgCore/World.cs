@@ -9,7 +9,7 @@ namespace ForgCore
 
         public class World : ForgTypes.IForgType
         {
-            public Ast.FullAssignment AST => new Ast.FullAssignment("World",Ast.Assignment.NewTypeAssignment(new Ast.TypeAssignment()), FSharpList<Ast.FullAssignment>.Empty); 
+            public Ast.FullAssignment AST => new Ast.FullAssignment("World",Ast.Assignment.NewTypeDeclaration(Ast.TypeDeclaration.Primitive), FSharpList<Ast.FullAssignment>.Empty); 
         }
         internal class worldfunc<T> : ForgTypes.IForgFunc<T,World>
         {
