@@ -188,9 +188,11 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
             ilGenerator.Emit(OpCodes.Ret)
             let created = nestedTypeBuilder.CreateType()
             Some {SymbolName=created.Name;Namespace=[];Ref=SystemType created}
+        | TypeDeclaration typedeclaration ->  None
+        | GenericTypeDeclaration generictypedecl -> None
 
 let push (code:List<FullAssignment>) (context:Context):unit=  
     for assignment in code do
         writeAssignment assignment null context|>ignore
     Console.WriteLine "Done"
-    //Console.WriteLine code
+    Console.WriteLine code

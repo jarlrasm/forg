@@ -18,24 +18,19 @@ type ParameterlessAssignment =
 
 type DataType =  List<Parameter>
 
-type TypeValue =
-    {Atom : Option<string>;
-     Reference : Reference}
-     
-type TypeOption = 
-    | Atom of string
-    | Value of TypeValue
-    
-type AlgebraicType = List<TypeOption>
+type Atom={Name:string}
+
+type AlgebraicType = List<TypeDeclaration>
 and TypeDeclaration = 
-    |Primitive
+    |Primitive 
+    |Atom of Atom
     |Algebraic of AlgebraicType
     |Data of DataType
-    |Alias of Reference
     
 type GenericTypeDeclaration =
     {Parameters : List<Parameter>;
      TypeDeclaration : TypeDeclaration}
+
 type Assignment = 
     | FunctionAssignment of FunctionAssignment
     | ParameterlessAssignment of ParameterlessAssignment

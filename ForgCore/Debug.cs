@@ -21,7 +21,7 @@ namespace ForgCore
                     Console.WriteLine(content.Value);
                     return content;
                 });
-
+                _ran = true;
             }
 
             public bool HasResult => _ran;

@@ -12,8 +12,7 @@ type Context = {Symbols:List<List<Symbol>>}
 
 let createContext (assemblies:List<Assembly>)=
 
-    { Symbols= [
-        assemblies
+    { Symbols= [assemblies
          |> List.collect (fun x-> x.GetTypes() |>List.ofSeq) 
          |> List.filter (fun x-> typeof<IForgModule>.IsAssignableFrom(x))
          |> List.map 

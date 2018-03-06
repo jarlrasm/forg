@@ -1,7 +1,7 @@
 Types = module 
 where
 [
-Tristate-Bool = type :true|:false|:filenotfound
-Maybe x = type :just x|:nothing
-Person = type name::String age::Int
+Person = type name::String,age::Int
+Maybe x = type |just::x|:nothing
+Tristate-Bool = type |:true|:false|:filenotfound
 ]

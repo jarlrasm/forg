@@ -14,7 +14,6 @@ namespace ForgCore
         internal class worldfunc<T> : ForgTypes.IForgFunc<T,World>
         {
             private readonly Func<World, T> _sysFunc;
-            private readonly World _world;
             private bool _ran=false;
 
             public worldfunc(Func <World,T> sysFunc)
@@ -27,7 +26,7 @@ namespace ForgCore
             public void Execute(World world)
             {
                 if (world == null) throw new ArgumentNullException(nameof(world));
-                Result = _sysFunc(_world);
+                Result = _sysFunc(world);
                 _ran = true;
 
             }
