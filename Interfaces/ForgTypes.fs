@@ -13,6 +13,13 @@ type IForgPrimitive<'a> =
     inherit IForgType
     abstract member Value: 'a
     
+type IForgDataType =
+    inherit IForgType
+    
+type IForgAlgebraicType =
+    inherit IForgType
+    abstract member Value: IForgType
+    
 type IForgLambda<'output> =
     inherit IForgType
     

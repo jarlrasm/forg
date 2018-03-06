@@ -16,5 +16,25 @@ namespace ForgCore
             public string Value { get; }
             public Ast.FullAssignment AST => new Ast.FullAssignment("String",Ast.Assignment.NewTypeDeclaration(Ast.TypeDeclaration.Primitive), FSharpList<Ast.FullAssignment>.Empty);
         }
+        public class Int : ForgTypes.IForgPrimitive<int>
+        {
+            public Int(int value)
+            {
+                Value = value;
+            }
+
+            public int Value { get; }
+            public Ast.FullAssignment AST => new Ast.FullAssignment("Int",Ast.Assignment.NewTypeDeclaration(Ast.TypeDeclaration.Primitive), FSharpList<Ast.FullAssignment>.Empty);
+        } 
+        public class Atom : ForgTypes.IForgPrimitive<string>
+        {
+            public Atom(string value)
+            {
+                Value = value;
+            }
+
+            public string Value { get; }
+            public Ast.FullAssignment AST => new Ast.FullAssignment("Atom",Ast.Assignment.NewTypeDeclaration(Ast.TypeDeclaration.Primitive), FSharpList<Ast.FullAssignment>.Empty);
+        }
     }
 }
