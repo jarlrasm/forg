@@ -16,12 +16,18 @@ type ParameterlessAssignment =
     | ModuleKeyword
     | Expression of Expression
 
-type DataType =  List<Parameter>
 
 type Atom={Name:string}
 
-type AlgebraicType = List<TypeDeclaration>
-and TypeDeclaration = 
+type TypeOption =
+    |Atom of Atom
+    |Parameter of Parameter
+    
+type AlgebraicType = List<TypeOption>
+
+type DataType =  List<Parameter>
+
+type TypeDeclaration = 
     |Primitive 
     |Atom of Atom
     |Algebraic of AlgebraicType

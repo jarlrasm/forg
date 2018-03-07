@@ -2,6 +2,6 @@ TypeTests = module
 where
 [
 Person = type name::String,age::Int
-Maybe x = type |just::x|:nothing
-Tristate-Bool = type |:true|:false|:filenotfound
+Tristate-Bool = type |true|false|filenotfound::String
+Maybe x = type |just::x|nothing
 ]

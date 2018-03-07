@@ -138,12 +138,66 @@ let writeDataType (data:DataType) (typeBuilder:TypeBuilder) (context:Context)=
         count <- count + 1s
     ilGenerator.Emit(OpCodes.Ret)
     
+let buildPrivateDefaultConstructor (typeBuilder:TypeBuilder)=
+    let constructorBuilder=typeBuilder.DefineConstructor(MethodAttributes.Private, CallingConventions.Standard, [||] )
+    let ilGenerator=constructorBuilder.GetILGenerator()
+    ilGenerator.Emit(OpCodes.Ldarg_0)
+    ilGenerator.Emit(OpCodes.Call,typeof<Object>.GetConstructor(Array.Empty()))
+    ilGenerator.Emit(OpCodes.Ret)
+    constructorBuilder
+    
+let buildPropertySettingConstructor (typeBuilder:TypeBuilder) (propertyBuilder:PropertyBuilder)(attributes:MethodAttributes)=
+    let constructorBuilder=typeBuilder.DefineConstructor(attributes, CallingConventions.Standard, [|propertyBuilder.PropertyType|] )
+    let ilGenerator=constructorBuilder.GetILGenerator()
+    ilGenerator.Emit(OpCodes.Ldarg_0)
+    ilGenerator.Emit(OpCodes.Call,typeof<Object>.GetConstructor(Array.Empty()))
+    ilGenerator.Emit(OpCodes.Ldarg_0)
+    ilGenerator.Emit(OpCodes.Ldarg_1)
+    ilGenerator.Emit(OpCodes.Call,propertyBuilder.GetSetMethod())
+    ilGenerator.Emit(OpCodes.Ret)
+    constructorBuilder
 
-let rec writeType  typedeclaration (typeBuilder:TypeBuilder) (context:Context)=   
+let buildPrivatePropertySettingConstructor (typeBuilder:TypeBuilder) (propertyBuilder:PropertyBuilder)=
+ buildPropertySettingConstructor typeBuilder propertyBuilder MethodAttributes.Private
+
+let writeAlgebraicType (algebraic:AlgebraicType) (typeBuilder:TypeBuilder) (context:Context)=
+    buildPrivateDefaultConstructor typeBuilder |> ignore
+    let valueProp=buildProperty typeBuilder typeof<Object> "Value"
+    let constructor=buildPrivatePropertySettingConstructor typeBuilder valueProp
+    for opt in algebraic do
+     match opt with
+        | TypeOption.Parameter param -> 
+           let systype=GetSystemtypeFrom (ForgContext.lookup context param.TypeReference.Value) //TODO check(many places)
+           let nestedtypeBuilder= typeBuilder.DefineNestedType(param.Name,TypeAttributes.NestedPublic)
+           let propertyBuilder= buildProperty nestedtypeBuilder systype "Value"
+           let innerClassConstructor=buildPropertySettingConstructor nestedtypeBuilder propertyBuilder MethodAttributes.Public
+           let methodBuilder = typeBuilder.DefineMethod("New"+param.Name, MethodAttributes.Static |||  MethodAttributes.HideBySig ||| MethodAttributes.Public,typeBuilder, [|systype|] )
+           let ilGenerator = methodBuilder.GetILGenerator()
+           ilGenerator.Emit(OpCodes.Ldarg_0)
+           ilGenerator.Emit(OpCodes.Newobj, innerClassConstructor)
+           ilGenerator.Emit(OpCodes.Newobj,constructor)
+           ilGenerator.Emit(OpCodes.Ret)
+        | TypeOption.Atom atom-> 
+           let methodBuilder = typeBuilder.DefineMethod(atom.Name, MethodAttributes.Static |||  MethodAttributes.HideBySig ||| MethodAttributes.Public,typeBuilder, [||] )
+           let ilGenerator = methodBuilder.GetILGenerator()
+           let symbol=ForgContext.lookup context {Name="Atom";Namespace=["ForgCore"]} 
+           match symbol.Ref with
+            | SystemType sys ->
+               ilGenerator.Emit(OpCodes.Ldstr,atom.Name)
+               let constructorAtom=(sys.GetConstructor([|typeof<string>|]))
+               ilGenerator.Emit(OpCodes.Newobj, constructorAtom)
+               ilGenerator.Emit(OpCodes.Newobj, constructor)
+               ilGenerator.Emit(OpCodes.Ret)
+            | _ -> raise (InvalidRef symbol.Ref)
+        | _ -> ignore() 
+        
+    
+
+let writeType  typedeclaration (typeBuilder:TypeBuilder) (context:Context)=   
      match typedeclaration with
         | Data data-> writeDataType  data typeBuilder context                   
-        | Algebraic algebraic-> algebraic|> ignore           
-        | Atom atom-> atom|> ignore  
+        | Algebraic algebraic->writeAlgebraicType algebraic typeBuilder context    
+        | Atom atom-> atom|> ignore  //TODO?
         | Primitive -> ignore() //Should never happen(famous last words)
              
 let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):Option<Symbol>=   

@@ -65,17 +65,20 @@ let parameterlessassignment : Parser<Assignment> =
               ParameterlessAssignment(ParameterlessAssignment.Expression x))))
 
 let atom:Parser<Atom>=
-    (pstring ":")>>. name .>> spaces|>> fun x-> {Name=x}
+     name .>> spaces|>> fun x-> {Name=x}
 
-let typedeclaration, typedeclarationImplementation= createParserForwardedToRef()
 
-let algebraic  : Parser<AlgebraicType> = 
-    many1 (pstring "|" >>. spaces >>. typedeclaration .>>spaces) 
     
-let data  : Parser<DataType> = (sepBy1 (spaces >>.parameter) (pstring ","))
+let datatypeparameter : Parser<Parameter> =(pipe2 name (spaces >>.  (pstring "::" >>. reference)) (fun name typereference -> {Name = name; TypeReference=Some typereference})) 
 
-do typedeclarationImplementation := 
-    ((attempt(algebraic|>> (fun x -> TypeDeclaration.Algebraic x))) <|> (attempt (atom |>> fun x-> TypeDeclaration.Atom x))<|> (data|>> (fun x -> TypeDeclaration.Data x))) 
+let typeoption: Parser<TypeOption> =
+    (attempt datatypeparameter .>> spaces |>> (fun x-> Parameter  x)) <|> (atom |>> (fun x-> TypeOption.Atom x))
+    
+let algebraic  : Parser<AlgebraicType> = 
+    many1 (pstring "|" >>. spaces >>. typeoption .>>spaces) 
+let data  : Parser<DataType> = (sepBy1 (spaces >>.datatypeparameter) (pstring ","))
+let typedeclaration=
+    ((attempt(algebraic|>> (fun x -> TypeDeclaration.Algebraic x))) <|> (attempt (data|>> (fun x -> TypeDeclaration.Data x)))<|> (atom |>> fun x-> TypeDeclaration.Atom x)) 
                              
 let typeassignment  : Parser<TypeDeclaration> = (spaces >>. equalityKeyword >>. spaces >>. typeKeyword >>. spaces >>. typedeclaration)
 
