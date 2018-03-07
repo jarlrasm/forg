@@ -1,4 +1,4 @@
-Types = module 
+TypeTests = module 
 where
 [
 Person = type name::String,age::Int

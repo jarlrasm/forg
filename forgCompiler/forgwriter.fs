@@ -5,6 +5,7 @@ open System.Reflection.Emit
 open System.Threading
 open Ast
 open ForgContext
+open ForgParser
 open System
 open ForgTypes
 
@@ -84,14 +85,18 @@ let rec writeExpression (exp:Expression) (il:ILGenerator) (context:Context)=
             | _ -> raise (InvalidRef symbol.Ref)
 
 let buildProperty (typeBuilder:TypeBuilder) (systemType:System.Type) (name:string) : PropertyBuilder=
+     printf "Creating %s\n"  name
      let backingName="_"+name.ToLower()
      let field = typeBuilder.DefineField(backingName,  systemType,  FieldAttributes.Private)
      let propertyBuilder = typeBuilder.DefineProperty(name,PropertyAttributes.None,systemType,null)
-     let getSetAttr = 
+     let getAttr = 
                  MethodAttributes.Public ||| MethodAttributes.SpecialName |||
                      MethodAttributes.HideBySig
+     let setAttr = 
+                 MethodAttributes.Private ||| MethodAttributes.SpecialName |||
+                     MethodAttributes.HideBySig
      let getBuilder =  typeBuilder.DefineMethod("get_"+name,
-                                            getSetAttr,        
+                                            getAttr,        
                                             systemType,
                                             Type.EmptyTypes)
      
@@ -100,7 +105,7 @@ let buildProperty (typeBuilder:TypeBuilder) (systemType:System.Type) (name:strin
      ilgen.Emit(OpCodes.Ldfld, field)
      ilgen.Emit(OpCodes.Ret)
      let setBuilder =  typeBuilder.DefineMethod("set_"+name,
-                                            getSetAttr,     
+                                            setAttr,     
                                             null,
                                             [|systemType|])
      
@@ -112,7 +117,35 @@ let buildProperty (typeBuilder:TypeBuilder) (systemType:System.Type) (name:strin
      propertyBuilder.SetGetMethod(getBuilder)
      propertyBuilder.SetSetMethod(setBuilder)
      propertyBuilder
+
+let writeDataType (data:DataType) (typeBuilder:TypeBuilder) (context:Context)=
+    let props=data |>
+              List.map (fun parameter->
+                let systype=GetSystemtypeFrom (ForgContext.lookup context parameter.TypeReference.Value)
+                buildProperty typeBuilder systype parameter.Name)
+    let constructorArgs= props |>
+                            List.map (fun prop->prop.PropertyType) |> List.toArray    
+           
+    let constructorBuilder=typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, constructorArgs )
+    let ilGenerator=constructorBuilder.GetILGenerator()
+    ilGenerator.Emit(OpCodes.Ldarg_0)
+    ilGenerator.Emit(OpCodes.Call,typeof<Object>.GetConstructor(Array.Empty()))
+    let mutable count = 1s
+    for prop in props do
+        ilGenerator.Emit(OpCodes.Ldarg_0)
+        ilGenerator.Emit(OpCodes.Ldarg,count)
+        ilGenerator.Emit(OpCodes.Call, prop.GetSetMethod())
+        count <- count + 1s
+    ilGenerator.Emit(OpCodes.Ret)
     
+
+let rec writeType  typedeclaration (typeBuilder:TypeBuilder) (context:Context)=   
+     match typedeclaration with
+        | Data data-> writeDataType  data typeBuilder context                   
+        | Algebraic algebraic-> algebraic|> ignore           
+        | Atom atom-> atom|> ignore  
+        | Primitive -> ignore() //Should never happen(famous last words)
+             
 let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):Option<Symbol>=   
         Console.WriteLine ("Creating " + assignment.Name)
         match assignment.Assignment with
@@ -123,7 +156,12 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
                 assemblyName.Name <- assignment.Name
                 let assemblyBuilder =  Thread.GetDomain().DefineDynamicAssembly(assemblyName,
                                                             AssemblyBuilderAccess.RunAndSave)
-                let modl = assemblyBuilder.DefineDynamicModule(assignment.Name+".exe")
+                       
+                let assemblyName=if List.exists (fun x-> x.Name = "main") assignment.Where then
+                                    assignment.Name+".exe"     
+                                 else                 
+                                    assignment.Name+".dll"               
+                let modl = assemblyBuilder.DefineDynamicModule(assemblyName)
     
                 let typeBuilder = modl.DefineType(assignment.Name,
                                                 TypeAttributes.Public |||
@@ -138,7 +176,7 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
                         let created=typeBuilder.CreateType()
                         assemblyBuilder.Save( assignment.Name+".exe")
                         Some {SymbolName=created.Name;Namespace=[];Ref=SystemType created}
-                    else
+                else
                         let created=typeBuilder.CreateType()
                         assemblyBuilder.Save( assignment.Name+".dll")
                         Some{SymbolName=created.Name;Namespace=[];Ref=SystemType created}
@@ -188,11 +226,15 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
             ilGenerator.Emit(OpCodes.Ret)
             let created = nestedTypeBuilder.CreateType()
             Some {SymbolName=created.Name;Namespace=[];Ref=SystemType created}
-        | TypeDeclaration typedeclaration ->  None
+        | TypeDeclaration typedeclaration ->
+            let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.NestedPublic)//TODO  implement interface
+            writeType typedeclaration nestedTypeBuilder context
+            let created = nestedTypeBuilder.CreateType()
+            Some {SymbolName=created.Name;Namespace=[];Ref=SystemType created}
         | GenericTypeDeclaration generictypedecl -> None
 
 let push (code:List<FullAssignment>) (context:Context):unit=  
+    Console.WriteLine code
     for assignment in code do
         writeAssignment assignment null context|>ignore
     Console.WriteLine "Done"
-    Console.WriteLine code

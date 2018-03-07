@@ -1,13 +1,11 @@
-hellosomeone = module
-(
-  import core
-  where
-    bool = type :true|:false
-    person = type name::string age::int greetable::bool
-
-    main world::world=
-      debug name::person <=(someone (first (console-arguments world)))
-      where
-        someone named=person => named, 40, bool => :true
-
-)
+HelloSomeone = module 
+ where
+ [
+   Person = type name::String, age::Int
+   main world::World=
+     ((Debug.print (someone (first (console-arguments world)))#name world)
+     where
+     [
+        someone named= {name=named, age=40}::Person
+     ]
+ ]

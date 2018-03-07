@@ -56,9 +56,7 @@
     <Content Include="packages.config" />
     <Content Include="tests\hellosomeoneforg.forg" />
     <Content Include="tests\helloworld.forg" />
-    <Content Include="tests\lambda.forg" />
-    <Content Include="tests\nativecall.forg" />
-    <Content Include="tests\types.forg" />
+    <Content Include="tests\typetest.forg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\forgCompiler\forgCompiler.fsproj">
