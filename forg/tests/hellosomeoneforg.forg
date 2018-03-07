@@ -3,7 +3,7 @@ HelloSomeone = module
  [
    Person = type name::String, age::Int
    main world::World=
-     ((Debug.print (someone (first (console-arguments world)))#name world)
+     ((Debug.print (name (someone (first (console-arguments world))))) world)
      where
      [
         someone named= {name=named, age=40}::Person

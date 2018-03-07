@@ -6,7 +6,9 @@ type Parameter =
      TypeReference : Option<Reference>}
      
 type FunctionCall = {Function:Expression;Argument:Option<Expression>}
-and Expression = FunctionCall of FunctionCall|Reference of Reference|StringLiteral of string
+and NameWithValue = {Name:string; Value:Expression}
+and Constructor= {Assignments:List<NameWithValue>;TypeReference: Option<Reference>}
+and Expression = FunctionCall of FunctionCall|Reference of Reference|StringLiteral of string|Constructor of Constructor
 
 type FunctionAssignment = 
     {Parameter : Parameter;

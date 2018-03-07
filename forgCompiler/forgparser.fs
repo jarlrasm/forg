@@ -2,6 +2,7 @@ module ForgParser
 
 open FParsec
 open Ast
+open System
 
 type UserState = unit
 
@@ -40,7 +41,13 @@ let functioncall:Parser<FunctionCall> = (pipe2 (spaces>>. pstring "(" >>. spaces
 let reference: Parser<Reference> =
     spaces >>. (sepBy1 name (pstring ".") )|>> (fun x -> {Name=List.rev(x).Head; Namespace =List.rev(x).Tail|>List.rev})
 
-do expressionImplementation :=   (functioncall |>> fun x -> Expression.FunctionCall x)<|>(reference |>> fun x -> Expression.Reference x)<|>(stringLiteral |>> fun x -> Expression.StringLiteral x)
+let constructorAssignment:Parser<NameWithValue> =
+    pipe2 (spaces >>. name ) ((spaces >>. (pstring "="))>>. spaces >>. expression)(fun name exp -> {Name=name; Value =exp})
+        
+let constructor: Parser<Constructor> =
+    (pipe2 (spaces >>. pstring "{" >>.(sepBy1 constructorAssignment (pstring ",")).>> pstring "}") (spaces >>. (opt (pstring "::" >>. reference))) (fun assignments typeReference -> {Assignments=assignments; TypeReference =typeReference}))
+    
+do expressionImplementation :=   (functioncall |>> fun x -> Expression.FunctionCall x)<|>(reference |>> fun x -> Expression.Reference x)<|>(stringLiteral |>> fun x -> Expression.StringLiteral x)<|>(constructor |>> fun x -> Expression.Constructor x)
 
 let assignment, assignmentImplementation= createParserForwardedToRef()
 
