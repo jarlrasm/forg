@@ -1,11 +1,11 @@
 HelloSomeone = module 
  where
  [
-   Person = type name::String, age::Int
+   Person = type name::String, age::String
    main world::World=
-     ((Debug.print (name (someone (first (console-arguments world))))) world)
+     ((Debug.print name#(someone "yo")) world)
      where
      [
-        someone named= {name=named, age=40}::Person
+        someone named::String= {name=named, age="40"}::Person
      ]
  ]

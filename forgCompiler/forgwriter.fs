@@ -10,19 +10,20 @@ open System
 open ForgTypes
 
 exception InvalidRef of Ref
+exception InvalidExpression of Expression
 let createMainFunc (typeBuilder:TypeBuilder) (assemblyBuilder:AssemblyBuilder)  (context:Context)=
    Console.WriteLine "Creating main"
    let methodBuilder = typeBuilder.DefineMethod("Main", MethodAttributes.HideBySig ||| MethodAttributes.Static ||| MethodAttributes.Public, typeof<int>, [|typeof<string>|])                          
    let ilGenerator = methodBuilder.GetILGenerator()
    let mainclass=ForgContext.lookup context {Name ="main"; Namespace =[]}
-   match mainclass.Ref with
+   match mainclass.Value.Ref with
    | SystemType maintype ->
        let constructor= (maintype.GetConstructor(Array.Empty()))
        ilGenerator.Emit(OpCodes.Newobj,constructor)
        let method=maintype.GetMethod "Execute"
        ilGenerator.Emit(OpCodes.Newobj,(Seq.head (method.GetParameters())).ParameterType.GetConstructor(Array.Empty()))
        ilGenerator.Emit(OpCodes.Call, method)
-   | _ -> raise (InvalidRef mainclass.Ref)
+   | _ -> raise (InvalidRef mainclass.Value.Ref)
    ilGenerator.Emit(OpCodes.Ldc_I4, 0)
    ilGenerator.Emit(OpCodes.Ret)
    assemblyBuilder.SetEntryPoint(methodBuilder, PEFileKinds.ConsoleApplication)
@@ -39,35 +40,36 @@ let rec getTypeOf (exp:Expression) (context:Context) : System.Type=
 
      | Reference ref-> 
            let symbol=ForgContext.lookup context ref
-           match symbol.Ref with
+           match symbol.Value.Ref with
            | SystemType sys ->
                sys
            | Parameter parameter -> 
                parameter
-           | _ -> raise (InvalidRef symbol.Ref)
+           | _ -> raise (InvalidRef symbol.Value.Ref)
      | StringLiteral str-> 
            typeof<string>
      | Constructor constructor-> 
            let symbol=ForgContext.lookup context constructor.TypeReference.Value //Again:TODO
-           match symbol.Ref with
+           match symbol.Value.Ref with
            | SystemType sys ->
                sys
            | Parameter parameter -> 
                parameter
-           | _ -> raise (InvalidRef symbol.Ref)
+           | _ -> raise (InvalidRef symbol.Value.Ref)
  
     
 let rec writeExpression (exp:Expression) (il:ILGenerator) (context:Context)=
      match exp with
      | FunctionCall fcall->
-        if(fcall.Argument.IsSome) then
+        match fcall.Argument with
+        | Some arg ->
             writeExpression fcall.Function il context
             il.Emit(OpCodes.Dup)
-            writeExpression fcall.Argument.Value il context
+            writeExpression arg il context
             let functype=getTypeOf fcall.Function context
             il.Emit(OpCodes.Callvirt, functype.GetMethod("Execute"))
             il.Emit(OpCodes.Callvirt, functype.GetMethod("get_Result",BindingFlags.FlattenHierarchy|||BindingFlags.Public|||BindingFlags.Instance))
-        else
+        | None ->
             writeExpression fcall.Function il context
             il.Emit(OpCodes.Dup)
             let functype=getTypeOf fcall.Function context
@@ -75,39 +77,48 @@ let rec writeExpression (exp:Expression) (il:ILGenerator) (context:Context)=
             il.Emit(OpCodes.Callvirt, functype.GetMethod("get_Result",BindingFlags.FlattenHierarchy|||BindingFlags.Public|||BindingFlags.Instance))
 
      | Reference ref-> 
-           let symbol=ForgContext.lookup context ref
-           match symbol.Ref with
-           | SystemType sys ->
-               let constructor=(sys.GetConstructor(Array.Empty()))
-               il.Emit(OpCodes.Newobj, constructor)
-           | Parameter parameter -> 
-               il.Emit(OpCodes.Ldarg_1)
-           | _ -> raise (InvalidRef symbol.Ref)
+           let maybeSymbol=ForgContext.lookup context ref
+           match maybeSymbol with
+           | None ->
+              raise (InvalidExpression exp)
+           | Some symbol ->
+               match symbol.Ref with
+               | SystemType sys ->
+                   let constructor=(sys.GetConstructor(Array.Empty()))
+                   il.Emit(OpCodes.Newobj, constructor)
+               | Parameter parameter -> 
+                   il.Emit(OpCodes.Ldarg_1)
+               | _ -> raise (InvalidRef symbol.Ref)
      | StringLiteral str-> 
             let symbol=ForgContext.lookup context {Name="String";Namespace=["ForgCore"]} 
-            match symbol.Ref with
+            match symbol.Value.Ref with
             | SystemType sys ->
                il.Emit(OpCodes.Ldstr,str)
                let constructor=(sys.GetConstructor([|typeof<string>|]))
                il.Emit(OpCodes.Newobj, constructor)
-            | _ -> raise (InvalidRef symbol.Ref)
+            | _ -> raise (InvalidRef symbol.Value.Ref)
      | Constructor constructor ->
             match constructor.TypeReference with
                 | Some typeref ->
                     let symbol=ForgContext.lookup context typeref 
-                    match symbol.Ref with
+                    match symbol.Value.Ref with
                     | SystemType sys ->
                        
                        let typeconstructor=Array.head (sys.GetConstructors())
                        let parameters=typeconstructor.GetParameters()
                        if(parameters.Length <> constructor.Assignments.Length) then
-                         raise (InvalidRef symbol.Ref)
+                         raise (InvalidRef symbol.Value.Ref)
                        for param in parameters do
                             let assignment = constructor.Assignments |> List.find (fun x-> x.Name.ToLower()=param.Name.ToLower())
                             writeExpression assignment.Value il context 
                        il.Emit(OpCodes.Newobj, typeconstructor)
-                    | _ -> raise (InvalidRef symbol.Ref)
+                    | _ -> raise (InvalidRef symbol.Value.Ref)
                 | None -> ignore()// TODO
+     | SimpleDestructor destructor ->
+            writeExpression destructor.DataObject il context
+            let functype=getTypeOf destructor.DataObject context
+            il.Emit(OpCodes.Call, functype.GetMethod("get_"+destructor.Name))
+            
              
      
 let buildProperty (typeBuilder:TypeBuilder) (systemType:System.Type) (name:string) : PropertyBuilder=
@@ -147,7 +158,7 @@ let buildProperty (typeBuilder:TypeBuilder) (systemType:System.Type) (name:strin
 let writeDataType (data:DataType) (typeBuilder:TypeBuilder) (context:Context)=
     let props=data |>
               List.map (fun parameter->
-                let systype=GetSystemtypeFrom (ForgContext.lookup context parameter.TypeReference.Value)
+                let systype=GetSystemtypeFrom (ForgContext.lookup context parameter.TypeReference.Value).Value
                 buildProperty typeBuilder systype parameter.Name)
     let constructorArgs= props |>
                             List.map (fun prop->prop.PropertyType) |> List.toArray    
@@ -161,7 +172,7 @@ let writeDataType (data:DataType) (typeBuilder:TypeBuilder) (context:Context)=
         ilGenerator.Emit(OpCodes.Ldarg_0)
         ilGenerator.Emit(OpCodes.Ldarg,count)
         ilGenerator.Emit(OpCodes.Call, prop.GetSetMethod(true))
-        constructorBuilder.DefineParameter(int count,ParameterAttributes.In,prop.Name) |>ignore
+        constructorBuilder.DefineParameter(int count,ParameterAttributes.None,prop.Name) |>ignore
         count <- count + 1s
     ilGenerator.Emit(OpCodes.Ret)
     
@@ -194,7 +205,7 @@ let writeAlgebraicType (algebraic:AlgebraicType) (typeBuilder:TypeBuilder) (cont
     for opt in algebraic do
      match opt with
         | TypeOption.Parameter param -> 
-           let systype=GetSystemtypeFrom (ForgContext.lookup context param.TypeReference.Value) //TODO check(many places)
+           let systype=GetSystemtypeFrom (ForgContext.lookup context param.TypeReference.Value).Value //TODO check(many places)
            let nestedtypeBuilder= typeBuilder.DefineNestedType(param.Name,TypeAttributes.NestedPublic)
            let propertyBuilder= buildProperty nestedtypeBuilder systype "Value"
            let innerClassConstructor=buildPropertySettingConstructor nestedtypeBuilder propertyBuilder MethodAttributes.Public
@@ -208,14 +219,14 @@ let writeAlgebraicType (algebraic:AlgebraicType) (typeBuilder:TypeBuilder) (cont
            let methodBuilder = typeBuilder.DefineMethod(atom.Name, MethodAttributes.Static |||  MethodAttributes.HideBySig ||| MethodAttributes.Public,typeBuilder, [||] )
            let ilGenerator = methodBuilder.GetILGenerator()
            let symbol=ForgContext.lookup context {Name="Atom";Namespace=["ForgCore"]} 
-           match symbol.Ref with
+           match symbol.Value.Ref with
             | SystemType sys ->
                ilGenerator.Emit(OpCodes.Ldstr,atom.Name)
                let constructorAtom=(sys.GetConstructor([|typeof<string>|]))
                ilGenerator.Emit(OpCodes.Newobj, constructorAtom)
                ilGenerator.Emit(OpCodes.Newobj, constructor)
                ilGenerator.Emit(OpCodes.Ret)
-            | _ -> raise (InvalidRef symbol.Ref)
+            | _ -> raise (InvalidRef symbol.Value.Ref)
         | _ -> ignore() 
         
     
@@ -227,7 +238,7 @@ let writeType  typedeclaration (typeBuilder:TypeBuilder) (context:Context)=
         | Atom atom-> atom|> ignore  //TODO?
         | Primitive -> ignore() //Should never happen(famous last words)
              
-let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):Option<Symbol>=   
+let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):List<Symbol>=   
         Console.WriteLine ("Creating " + assignment.Name)
         match assignment.Assignment with
         | ParameterlessAssignment(parameterlessassignment)->
@@ -256,12 +267,12 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
                 let mutable newcontext = context
                 for innerAssignment in assignment.Where do
                   newcontext<-ForgContext.pushFrame newcontext frame
-                  let symbol =writeAssignment innerAssignment typeBuilder newcontext
-                  match symbol with
-                    |Some x->
-                        newcontext<-ForgContext.popFrame(newcontext)
-                        frame<-(List.append [x] frame)
-                    |_ -> ignore()
+                  let symbols =writeAssignment innerAssignment typeBuilder newcontext
+                  newcontext<-ForgContext.popFrame(newcontext)
+                  for symbol in symbols do
+                    frame<-(List.append [symbol] frame)
+                    
+                    
                 let context=ForgContext.pushFrame context frame
                 if List.exists (fun x-> x.Name = "main") assignment.Where then
                         createMainFunc typeBuilder assemblyBuilder context|> ignore
@@ -271,7 +282,7 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
                         assemblyBuilder.Save( assignment.Name+".exe")
                 else
                         assemblyBuilder.Save( assignment.Name+".dll")
-                Some{SymbolName=created.Name;Namespace=[];Ref=SystemType created}
+                [{SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
                 
              | Expression expression -> 
                 let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.NestedPublic)//TODO  implement interface
@@ -282,12 +293,10 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
                 let mutable newcontext = context
                 for innerAssignment in assignment.Where do
                   newcontext<-ForgContext.pushFrame newcontext frame
-                  let symbol =writeAssignment innerAssignment typeBuilder newcontext
-                  match symbol with
-                    |Some x->
-                        newcontext<-ForgContext.popFrame(newcontext)
-                        frame<-(List.append [x] frame)
-                    |_ -> ignore()
+                  let symbols =writeAssignment innerAssignment nestedTypeBuilder newcontext
+                  newcontext<-ForgContext.popFrame(newcontext)
+                  for symbol in symbols do
+                    frame<-(List.append [symbol] frame)
                   
                 let context=ForgContext.pushFrame context frame
                 
@@ -305,7 +314,7 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
                 ilGenerator.Emit(OpCodes.Call, propertyBuilder.GetSetMethod(true))
                 ilGenerator.Emit(OpCodes.Ret)
                 let created = nestedTypeBuilder.CreateType()
-                Some {SymbolName=created.Name;Namespace=[];Ref=SystemType created}
+                [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
                 
         | FunctionAssignment functionAssignment -> 
         
@@ -316,12 +325,11 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
             let mutable newcontext = context
             for innerAssignment in assignment.Where do
               newcontext<-ForgContext.pushFrame newcontext frame
-              let symbol =writeAssignment innerAssignment typeBuilder newcontext
-              match symbol with
-                |Some x->
-                    newcontext<-ForgContext.popFrame(newcontext)
-                    frame<-(List.append [x] frame)
-                |_ -> ignore()
+              let symbols =writeAssignment innerAssignment nestedTypeBuilder newcontext
+              newcontext<-ForgContext.popFrame(newcontext)
+              for symbol in symbols do
+                frame<-(List.append [symbol] frame)
+                    
             let context=ForgContext.pushFrame context frame
                 
             let constructorBuilder=nestedTypeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [||] )
@@ -329,7 +337,7 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
             ilGenerator.Emit(OpCodes.Ldarg_0)
             ilGenerator.Emit(OpCodes.Call,typeof<Object>.GetConstructor(Array.Empty()))
             ilGenerator.Emit(OpCodes.Ret)
-            let argtype=GetSystemtypeFrom (ForgContext.lookup context functionAssignment.Parameter.TypeReference.Value)
+            let argtype=GetSystemtypeFrom (ForgContext.lookup context functionAssignment.Parameter.TypeReference.Value).Value
             let propertyBuilder= buildProperty nestedTypeBuilder (getTypeOf functionAssignment.Expression context) "Result" 
             let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  MethodAttributes.HideBySig ||| MethodAttributes.Public,null, [|argtype|] )
             
@@ -340,13 +348,13 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):O
             ilGenerator.Emit(OpCodes.Call, propertyBuilder.GetSetMethod(true))
             ilGenerator.Emit(OpCodes.Ret)
             let created = nestedTypeBuilder.CreateType()
-            Some {SymbolName=created.Name;Namespace=[];Ref=SystemType created}
+            [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
         | TypeDeclaration typedeclaration ->
             let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.NestedPublic)//TODO  implement interface
             writeType typedeclaration nestedTypeBuilder context
             let created = nestedTypeBuilder.CreateType()
-            Some {SymbolName=created.Name;Namespace=[];Ref=SystemType created}
-        | GenericTypeDeclaration generictypedecl -> None
+            [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
+        | GenericTypeDeclaration generictypedecl -> []
 
 let push (code:List<FullAssignment>) (context:Context):unit=  
     Console.WriteLine code

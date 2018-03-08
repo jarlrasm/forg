@@ -47,7 +47,15 @@ let constructorAssignment:Parser<NameWithValue> =
 let constructor: Parser<Constructor> =
     (pipe2 (spaces >>. pstring "{" >>.(sepBy1 constructorAssignment (pstring ",")).>> pstring "}") (spaces >>. (opt (pstring "::" >>. reference))) (fun assignments typeReference -> {Assignments=assignments; TypeReference =typeReference}))
     
-do expressionImplementation :=   (functioncall |>> fun x -> Expression.FunctionCall x)<|>(reference |>> fun x -> Expression.Reference x)<|>(stringLiteral |>> fun x -> Expression.StringLiteral x)<|>(constructor |>> fun x -> Expression.Constructor x)
+let simpledestructor: Parser<SimpleDestructor> =
+    (pipe2 (spaces >>. name) (spaces  >>.  (pstring "#") >>. expression)  (fun name ex -> {DataObject=ex; Name =name}))
+    
+do expressionImplementation := 
+    (attempt simpledestructor |>> fun x -> Expression.SimpleDestructor x)
+    <|>(attempt functioncall |>> fun x -> Expression.FunctionCall x)
+    <|>(attempt reference |>> fun x -> Expression.Reference x)
+    <|>(attempt stringLiteral |>> fun x -> Expression.StringLiteral x)
+    <|>( constructor |>> fun x -> Expression.Constructor x)
 
 let assignment, assignmentImplementation= createParserForwardedToRef()
 

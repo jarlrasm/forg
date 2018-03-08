@@ -32,4 +32,4 @@ let lookup context (reference:Ast.Reference)=
     context.Symbols 
      |> List.collect (fun x->x)
      |> List.filter (fun x-> x.SymbolName = reference.Name)//TODO namespace
-     |> List.head
+     |> List.tryHead

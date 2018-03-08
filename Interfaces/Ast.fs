@@ -8,7 +8,13 @@ type Parameter =
 type FunctionCall = {Function:Expression;Argument:Option<Expression>}
 and NameWithValue = {Name:string; Value:Expression}
 and Constructor= {Assignments:List<NameWithValue>;TypeReference: Option<Reference>}
-and Expression = FunctionCall of FunctionCall|Reference of Reference|StringLiteral of string|Constructor of Constructor
+and SimpleDestructor= {DataObject:Expression ;Name:string;}
+and Expression = 
+    FunctionCall of FunctionCall
+    |Reference of Reference
+    |StringLiteral of string
+    |Constructor of Constructor
+    |SimpleDestructor of SimpleDestructor
 
 type FunctionAssignment = 
     {Parameter : Parameter;

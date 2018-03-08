@@ -4,7 +4,7 @@ open Ast
 open System
 
 type IForgType =
-    abstract member AST:FullAssignment
+    abstract member AST:FullAssignment 
     
 type IForgModule =
     inherit IForgType
