@@ -10,6 +10,7 @@ Debug
 obj
 bin
 /build/
+packages
 *.exe
 !.paket/paket.bootstrapper.exe
 #RiderC#
