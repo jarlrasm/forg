@@ -97,6 +97,14 @@ let rec writeExpression (exp:Expression) (il:ILGenerator) (context:Context)=
                let constructor=(sys.GetConstructor([|typeof<string>|]))
                il.Emit(OpCodes.Newobj, constructor)
             | _ -> raise (InvalidRef symbol.Value.Ref)
+     | IntLiteral int-> 
+            let symbol=ForgContext.lookup context {Name="Int";Namespace=["ForgCore"]} 
+            match symbol.Value.Ref with
+            | SystemType sys ->
+               il.Emit(OpCodes.Ldc_I4,int)
+               let constructor=(sys.GetConstructor([|typeof<int>|]))
+               il.Emit(OpCodes.Newobj, constructor)
+            | _ -> raise (InvalidRef symbol.Value.Ref)
      | Constructor constructor ->
             match constructor.TypeReference with
                 | Some typeref ->

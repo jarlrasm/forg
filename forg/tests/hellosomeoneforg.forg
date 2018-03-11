@@ -6,6 +6,6 @@ HelloSomeone = module
      ((Debug.print name#(someone "yo")) world)
      where
      [
-        someone named::String= {name=named, age="40"}::Person
+        someone named::String= {name=named, age=40}::Person
      ]
  ]

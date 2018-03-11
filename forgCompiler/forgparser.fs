@@ -33,7 +33,8 @@ let stringLiteral =
                                                             | c   -> string c)
     between (pstring "\"") (pstring "\"")
             (stringsSepBy normalCharSnippet escapedChar)
-
+let intLiteral = pint32
+    
 let expression, expressionImplementation= createParserForwardedToRef()
 let functioncall:Parser<FunctionCall> = (pipe2 (spaces>>. pstring "(" >>. spaces >>. expression .>> spaces) ((opt expression) .>> spaces .>> pstring ")" .>> spaces)  (fun f arg-> 
     {Function = f; Argument=arg}))
@@ -55,6 +56,7 @@ do expressionImplementation :=
     <|>(attempt functioncall |>> fun x -> Expression.FunctionCall x)
     <|>(attempt reference |>> fun x -> Expression.Reference x)
     <|>(attempt stringLiteral |>> fun x -> Expression.StringLiteral x)
+    <|>(attempt intLiteral |>> fun x -> Expression.IntLiteral x)
     <|>( constructor |>> fun x -> Expression.Constructor x)
 
 let assignment, assignmentImplementation= createParserForwardedToRef()

@@ -13,6 +13,7 @@ and Expression =
     FunctionCall of FunctionCall
     |Reference of Reference
     |StringLiteral of string
+    |IntLiteral of int
     |Constructor of Constructor
     |SimpleDestructor of SimpleDestructor
 
