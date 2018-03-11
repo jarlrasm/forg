@@ -1,0 +1,11 @@
+LambdaTest = module 
+where
+[
+  main world::World=
+    ((Debug.print (get fun -> (getAgain fun x -> x))) world)
+    where
+    [
+        get x::(->String) = (x)
+        getAgain x::(String -> String) =(x "Hello world!")
+    ]
+]

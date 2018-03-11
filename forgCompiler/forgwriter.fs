@@ -6,11 +6,13 @@ open System.Threading
 open Ast
 open ForgContext
 open ForgParser
+open ForgParser
 open System
 open ForgTypes
 
 exception InvalidRef of Ref
 exception InvalidExpression of Expression
+exception InvalidParameter of Parameter
 let createMainFunc (typeBuilder:TypeBuilder) (assemblyBuilder:AssemblyBuilder)  (context:Context)=
    Console.WriteLine "Creating main"
    let methodBuilder = typeBuilder.DefineMethod("Main", MethodAttributes.HideBySig ||| MethodAttributes.Static ||| MethodAttributes.Public, typeof<int>, [|typeof<string>|])                          
@@ -120,7 +122,7 @@ let rec writeExpression (exp:Expression) (il:ILGenerator) (context:Context)=
                             let assignment = constructor.Assignments |> List.find (fun x-> x.Name.ToLower()=param.Name.ToLower())
                             writeExpression assignment.Value il context 
                        il.Emit(OpCodes.Newobj, typeconstructor)
-                    | _ -> raise (InvalidRef symbol.Value.Ref)
+                    | _ -> raise  (NotImplementedException "Nope")
                 | None -> ignore()// TODO
      | SimpleDestructor destructor ->
             writeExpression destructor.DataObject il context
@@ -166,7 +168,10 @@ let buildProperty (typeBuilder:TypeBuilder) (systemType:System.Type) (name:strin
 let writeDataType (data:DataType) (typeBuilder:TypeBuilder) (context:Context)=
     let props=data |>
               List.map (fun parameter->
-                let systype=GetSystemtypeFrom (ForgContext.lookup context parameter.TypeReference.Value).Value
+                let systype=match parameter.TypeReference with 
+                             | Some typeRef-> match typeRef with
+                                               |SimpleTypeReference tyref -> GetSystemtypeFrom (ForgContext.lookup context tyref).Value
+                             | None-> raise (InvalidParameter parameter)
                 buildProperty typeBuilder systype parameter.Name)
     let constructorArgs= props |>
                             List.map (fun prop->prop.PropertyType) |> List.toArray    
@@ -213,7 +218,11 @@ let writeAlgebraicType (algebraic:AlgebraicType) (typeBuilder:TypeBuilder) (cont
     for opt in algebraic do
      match opt with
         | TypeOption.Parameter param -> 
-           let systype=GetSystemtypeFrom (ForgContext.lookup context param.TypeReference.Value).Value //TODO check(many places)
+           let systype= match param.TypeReference with 
+                        |Some ref -> 
+                                match ref with 
+                                | SimpleTypeReference tref -> GetSystemtypeFrom (ForgContext.lookup context tref).Value //TODO check(many places)
+                        |None-> raise (NotImplementedException "TODO")
            let nestedtypeBuilder= typeBuilder.DefineNestedType(param.Name,TypeAttributes.NestedPublic)
            let propertyBuilder= buildProperty nestedtypeBuilder systype "Value"
            let innerClassConstructor=buildPropertySettingConstructor nestedtypeBuilder propertyBuilder MethodAttributes.Public
@@ -345,7 +354,11 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):L
             ilGenerator.Emit(OpCodes.Ldarg_0)
             ilGenerator.Emit(OpCodes.Call,typeof<Object>.GetConstructor(Array.Empty()))
             ilGenerator.Emit(OpCodes.Ret)
-            let argtype=GetSystemtypeFrom (ForgContext.lookup context functionAssignment.Parameter.TypeReference.Value).Value
+            let argtype= match functionAssignment.Parameter.TypeReference with
+                         |Some typeRef ->
+                            match typeRef with
+                            |SimpleTypeReference simpleTypeReference -> GetSystemtypeFrom (ForgContext.lookup context simpleTypeReference).Value
+                         | None -> raise (NotImplementedException "TODO")
             let propertyBuilder= buildProperty nestedTypeBuilder (getTypeOf functionAssignment.Expression context) "Result" 
             let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  MethodAttributes.HideBySig ||| MethodAttributes.Public,null, [|argtype|] )
             

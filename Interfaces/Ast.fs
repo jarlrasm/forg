@@ -1,14 +1,20 @@
 module Ast
 
 type Reference = {Name:string; Namespace:List<string>}
+type LambdaReference = {Parameter: Option<ParameterType>; Return:ParameterType}
+and ParameterType =
+    |SimpleTypeReference of Reference
+    |LambdaReference of LambdaReference
+    
 type Parameter = 
     {Name : string;
-     TypeReference : Option<Reference>}
+     TypeReference : Option<ParameterType>}
      
 type FunctionCall = {Function:Expression;Argument:Option<Expression>}
 and NameWithValue = {Name:string; Value:Expression}
 and Constructor= {Assignments:List<NameWithValue>;TypeReference: Option<Reference>}
 and SimpleDestructor= {DataObject:Expression ;Name:string;}
+and Lambda= {Parameter:Option<Parameter>; LambdaExpression:Expression;}
 and Expression = 
     FunctionCall of FunctionCall
     |Reference of Reference
@@ -16,6 +22,7 @@ and Expression =
     |IntLiteral of int
     |Constructor of Constructor
     |SimpleDestructor of SimpleDestructor
+    |Lambda of Lambda
 
 type FunctionAssignment = 
     {Parameter : Parameter;
