@@ -257,7 +257,21 @@ let writeType  typedeclaration (typeBuilder:TypeBuilder) (context:Context)=
         | Algebraic algebraic->writeAlgebraicType algebraic typeBuilder context    
         | Atom atom-> atom|> ignore  //TODO?
         | Primitive -> ignore() //Should never happen(famous last words)
-             
+let rec getLambdaType (lambdatypeRef:LambdaReference) context =
+    let returnType=match lambdatypeRef.Return with
+                   |SimpleTypeReference simpleTypeReference -> GetSystemtypeFrom (ForgContext.lookup context simpleTypeReference).Value
+                   |LambdaReference lambdatypeRef -> getLambdaType lambdatypeRef context
+    match lambdatypeRef.Parameter with
+        |Some parameter-> let parameterType=
+                            match parameter with
+                            |SimpleTypeReference simpleTypeReference -> GetSystemtypeFrom (ForgContext.lookup context simpleTypeReference).Value
+                            |LambdaReference lambdatypeRef -> getLambdaType lambdatypeRef context
+                          let lambdaType=GetSystemtypeFrom ((ForgContext.lookup context {Name="Lambda`2";Namespace=["ForgCore"]}).Value )
+                          lambdaType.MakeGenericType([|returnType ; parameterType|])
+        |None -> 
+              let lambdaType=GetSystemtypeFrom ((ForgContext.lookup context {Name="ParameterlessLambda`1";Namespace=["ForgCore"]}).Value )
+              lambdaType.MakeGenericType([|returnType |])
+              
 let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):List<Symbol>=   
         Console.WriteLine ("Creating " + assignment.Name)
         match assignment.Assignment with
@@ -361,12 +375,14 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):L
                          |Some typeRef ->
                             match typeRef with
                             |SimpleTypeReference simpleTypeReference -> GetSystemtypeFrom (ForgContext.lookup context simpleTypeReference).Value
-                            |LambdaReference lambdatype -> GetLambdaType
+                            |LambdaReference lambdatypeRef -> getLambdaType lambdatypeRef context
                          | None -> raise (NotImplementedException "TODO")
+
+            let context=ForgContext.pushFrame context [{SymbolName = functionAssignment.Parameter.Name; Namespace=[]; Ref= Parameter argtype}]
+            
             let propertyBuilder= buildProperty nestedTypeBuilder (getTypeOf functionAssignment.Expression context) "Result" 
             let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  MethodAttributes.HideBySig ||| MethodAttributes.Public,null, [|argtype|] )
             
-            let context=ForgContext.pushFrame context [{SymbolName = functionAssignment.Parameter.Name; Namespace=[]; Ref= Parameter argtype}]
             let ilGenerator = methodBuilder.GetILGenerator() 
             ilGenerator.Emit(OpCodes.Ldarg_0)
             writeExpression functionAssignment.Expression ilGenerator context typeBuilder
