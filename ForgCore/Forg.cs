@@ -30,65 +30,9 @@ namespace ForgCore
             public ForgTypes.IForgType Value { get; }
         }
 
-        public class ParameterlessLambda<TOutput> : ForgTypes.IForgParameterlessFunc<TOutput>
+        public class Closure : ForgTypes.IForgType
         {
-            public ParameterlessLambda(Func<ForgClosure, TOutput> lambdafunc, string paramName,
-                IEnumerable<KeyValuePair<string, object>> closed)
-            {
-                Lambdafunc = lambdafunc;
-                ParamName = paramName;
-                Closed = closed;
-            }
-
-            public Func<ForgClosure, TOutput> Lambdafunc { get; }
-            public string ParamName { get; }
-            public IEnumerable<KeyValuePair<string, object>> Closed { get; }
-
-
-            public Ast.FullAssignment AST => throw new NotImplementedException();
-
-            public void Execute()
-            {
-                Result = Lambdafunc(new ForgClosure(Closed));
-                HasResult = true;
-            }
-
-            public bool HasResult { get; private set; }
-            public TOutput Result { get; private set; }
-
-        }
-
-        public class Lambda<TOutput, TInput> : ForgTypes.IForgFunc<TOutput, TInput>
-        {
-            public Lambda(Func<ForgClosure, TOutput> lambdafunc, string paramName,
-                IEnumerable<KeyValuePair<string, object>> closed)
-            {
-                Lambdafunc = lambdafunc;
-                ParamName = paramName;
-                Closed = closed;
-            }
-
-            public Func<ForgClosure, TOutput> Lambdafunc { get; }
-            public string ParamName { get; }
-            public IEnumerable<KeyValuePair<string, object>> Closed { get; }
-
-
-            public Ast.FullAssignment AST => throw new NotImplementedException();
-
-            public void Execute(TInput input)
-            {
-                Result = Lambdafunc(new ForgClosure(Closed.Concat(new[]
-                    {new KeyValuePair<string, object>(ParamName, input)})));
-                HasResult = true;
-            }
-
-            public bool HasResult { get; private set; }
-            public TOutput Result { get; private set; }
-
-        }
-        public class ForgClosure : ForgTypes.IForgType
-        {
-            public ForgClosure(IEnumerable<KeyValuePair<string, object>> closed)
+            public Closure(IEnumerable<KeyValuePair<string, object>> closed)
             {
                 Closed = closed;
             }
