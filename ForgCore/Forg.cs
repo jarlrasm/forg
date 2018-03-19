@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.FSharp.Collections;
 
 namespace ForgCore
@@ -18,6 +19,7 @@ namespace ForgCore
 
             public static Bool New_true()
             {
+                
                 return new Bool(new Primitives.Atom("true"));
             }
             public static Bool New_false()

@@ -96,8 +96,7 @@ let rec generateLambdaClass (lambda:Lambda) (typeBuilder:TypeBuilder) (context:C
                 let ilGenerator = methodBuilder.GetILGenerator() 
                 writeExpression lambda.LambdaExpression ilGenerator context typeBuilder
                 ilGenerator.Emit(OpCodes.Ret)
-                let created = nestedTypeBuilder.CreateType()
-                [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
+                nestedTypeBuilder.CreateType()
             |None ->
                 let expressionType=getTypeOf lambda.LambdaExpression context
                 let functype=typeof<IForgParameterlessFunc<_>>.GetGenericTypeDefinition().MakeGenericType(expressionType)
@@ -116,8 +115,8 @@ let rec generateLambdaClass (lambda:Lambda) (typeBuilder:TypeBuilder) (context:C
                 let ilGenerator = methodBuilder.GetILGenerator() 
                 writeExpression lambda.LambdaExpression ilGenerator context typeBuilder
                 ilGenerator.Emit(OpCodes.Ret)
-                let created = nestedTypeBuilder.CreateType()
-                [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
+                nestedTypeBuilder.CreateType()
+                
     | _-> raise (InvalidRef symbol.Value.Ref)
     
 and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBuilder:TypeBuilder)=
@@ -187,7 +186,23 @@ and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBui
             let functype=getTypeOf destructor.DataObject context
             il.Emit(OpCodes.Call, functype.GetMethod("get_"+destructor.Name))
      | Lambda lambda -> 
-            generateLambdaClass lambda typeBuilder context |>ignore
+            let lambdaClass=generateLambdaClass lambda typeBuilder context 
+            let listType=typeof<System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string,Object>>>
+            il.Emit(OpCodes.Newobj,listType.GetConstructor([||]))
+            for symbol in getParameters context do 
+                il.Emit(OpCodes.Dup)
+                il.Emit(OpCodes.Ldstr, symbol.SymbolName)
+                il.Emit(OpCodes.Ldarg_1)//TODO more than one arg here...
+                il.Emit(OpCodes.Newobj,typeof<System.Collections.Generic.KeyValuePair<string,Object>>.GetConstructor([|typeof<string>;typeof<Object>|]))
+                il.Emit(OpCodes.Callvirt, listType.GetMethod("Add"))
+                
+            let symbol=ForgContext.lookup context {Name="Closure";Namespace=["ForgCore"]} 
+            match symbol.Value.Ref with
+            | SystemType close ->
+               il.Emit(OpCodes.Newobj, close.GetConstructor([|listType|]))
+               il.Emit(OpCodes.Newobj, lambdaClass.GetConstructor([|close|]))
+            | _ -> raise (InvalidRef symbol.Value.Ref)
+                
                       
              
      

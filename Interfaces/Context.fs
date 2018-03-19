@@ -27,7 +27,13 @@ let createContext (assemblies:List<Assembly>)=
 let pushFrame context symbols= {Symbols = symbols::context.Symbols}
     
 let popFrame context = {Symbols = context.Symbols.Tail}
-
+let getParameters context = 
+     context.Symbols 
+     |> List.collect (fun x->x)
+     |> List.filter (fun x-> match x.Ref with
+                                      | Parameter para -> true
+                                      | _ -> false)
+    
 let lookup context (reference:Ast.Reference)=
     context.Symbols 
      |> List.collect (fun x->x)
