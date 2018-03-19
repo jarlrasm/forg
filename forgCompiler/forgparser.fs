@@ -54,8 +54,10 @@ let simpledestructor: Parser<SimpleDestructor> =
 let parmeterlesslambda: Parser<Lambda> =
     (spaces  >>.  (pstring "fun") >>. spaces  >>.  (pstring "->") >>. expression) |>> (fun expr -> {Parameter=None; LambdaExpression=expr})
     
+let parameter, parameterImplementation= createParserForwardedToRef()
+
 let lambda: Parser<Lambda> =
-    (pipe2 (spaces  >>.  (pstring "fun") >>. spaces  >>. name) (spaces >>. (pstring "->") >>. expression) (fun paramName expr -> {Parameter=Some {Name=paramName; TypeReference = None}; LambdaExpression=expr}))
+    (pipe2 (spaces  >>.  (pstring "fun") >>. spaces  >>. parameter) (spaces >>. (pstring "->") >>. expression) (fun param expr -> {Parameter= Some param; LambdaExpression=expr}))
     
 do expressionImplementation := 
     (attempt simpledestructor |>> fun x -> Expression.SimpleDestructor x)
@@ -81,7 +83,9 @@ let lambdaRef =
 do parameterTypenImplementation  :=
     ((attempt reference) |>> fun x -> SimpleTypeReference x)
     <|>((lambdaRef) |>> fun x -> LambdaReference x)
-let parameter : Parser<Parameter> =(pipe2 name (spaces >>. (opt (pstring "::" >>. parameterType))) (fun name typereference -> {Name = name; TypeReference=typereference})) <|> (name |>> (fun x -> {Name = x; TypeReference=None})) 
+    
+do parameterImplementation := 
+    (pipe2 name (spaces >>. (opt (pstring "::" >>. parameterType))) (fun name typereference -> {Name = name; TypeReference=typereference})) <|> (name |>> (fun x -> {Name = x; TypeReference=None})) 
 
 let functionassignment : Parser<Assignment> = 
     (pipe2 parameter (spaces >>. equalityKeyword >>. spaces >>. expression) (fun arg exp -> 

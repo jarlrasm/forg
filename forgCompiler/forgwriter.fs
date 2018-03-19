@@ -70,17 +70,18 @@ let rec getLambdaParameterType (lambdaParam:Parameter) context =
                 
 let rec generateLambdaClass (lambda:Lambda) (typeBuilder:TypeBuilder) (context:Context) =
     let name="ForgLambda"+Guid.NewGuid().ToString()
+    printf "Creating %A\n" name
     let symbol=ForgContext.lookup context {Name="Closure";Namespace=["ForgCore"]} 
     match symbol.Value.Ref with
     | SystemType closure ->
         match lambda.Parameter with
             |Some parameter ->
                 let paramType= getLambdaParameterType parameter context
+                let context=ForgContext.pushFrame context [{SymbolName = parameter.Name; Namespace=[]; Ref=Parameter paramType}]
                 let expressionType=getTypeOf lambda.LambdaExpression context
                 let functype=typeof<IForgFunc<_,_>>.GetGenericTypeDefinition().MakeGenericType(expressionType,paramType)
                 let nestedTypeBuilder = typeBuilder.DefineNestedType(name,TypeAttributes.NestedPublic , functype)
                 let constructorBuilder=nestedTypeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [|closure|] )
-                let resulProperty= buildProperty nestedTypeBuilder expressionType "Result" 
                 let closureProp= buildProperty nestedTypeBuilder closure "Closure" 
                 let ilGenerator=constructorBuilder.GetILGenerator()
                 ilGenerator.Emit(OpCodes.Ldarg_0)
@@ -89,6 +90,12 @@ let rec generateLambdaClass (lambda:Lambda) (typeBuilder:TypeBuilder) (context:C
                 ilGenerator.Emit(OpCodes.Ldarg_1)
                 ilGenerator.Emit(OpCodes.Call, closureProp.GetSetMethod(true))
                 ilGenerator.Emit(OpCodes.Ret)
+                
+                let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  MethodAttributes.HideBySig ||| MethodAttributes.Public,expressionType, [|paramType|] )
+                
+                let ilGenerator = methodBuilder.GetILGenerator() 
+                writeExpression lambda.LambdaExpression ilGenerator context typeBuilder
+                ilGenerator.Emit(OpCodes.Ret)
                 let created = nestedTypeBuilder.CreateType()
                 [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
             |None ->
@@ -96,7 +103,6 @@ let rec generateLambdaClass (lambda:Lambda) (typeBuilder:TypeBuilder) (context:C
                 let functype=typeof<IForgParameterlessFunc<_>>.GetGenericTypeDefinition().MakeGenericType(expressionType)
                 let nestedTypeBuilder =typeBuilder.DefineNestedType(name,TypeAttributes.NestedPublic , functype)
                 let constructorBuilder=nestedTypeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [|closure|] )
-                let resulProperty= buildProperty nestedTypeBuilder expressionType "Result" 
                 let closureProp= buildProperty nestedTypeBuilder closure "Closure" 
                 let ilGenerator=constructorBuilder.GetILGenerator()
                 ilGenerator.Emit(OpCodes.Ldarg_0)
@@ -104,6 +110,11 @@ let rec generateLambdaClass (lambda:Lambda) (typeBuilder:TypeBuilder) (context:C
                 ilGenerator.Emit(OpCodes.Call,typeof<Object>.GetConstructor(Array.Empty()))
                 ilGenerator.Emit(OpCodes.Ldarg_1)
                 ilGenerator.Emit(OpCodes.Call, closureProp.GetSetMethod(true))
+                ilGenerator.Emit(OpCodes.Ret)
+                let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  MethodAttributes.HideBySig ||| MethodAttributes.Public,expressionType, [||] )
+                
+                let ilGenerator = methodBuilder.GetILGenerator() 
+                writeExpression lambda.LambdaExpression ilGenerator context typeBuilder
                 ilGenerator.Emit(OpCodes.Ret)
                 let created = nestedTypeBuilder.CreateType()
                 [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
@@ -385,6 +396,7 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):L
                 ilGenerator.Emit(OpCodes.Ldarg_0)
                 ilGenerator.Emit(OpCodes.Call,typeof<Object>.GetConstructor(Array.Empty()))
                 ilGenerator.Emit(OpCodes.Ret)
+                
                 let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  MethodAttributes.HideBySig ||| MethodAttributes.Public,(getTypeOf expression context), [||] )
                 
                 let ilGenerator = methodBuilder.GetILGenerator() 
