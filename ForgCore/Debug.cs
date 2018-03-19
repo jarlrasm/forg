@@ -14,14 +14,13 @@ namespace ForgCore
 
             public Ast.FullAssignment AST => throw new NotImplementedException();
 
-            public void Execute(Primitives.String content)
+            public ForgTypes.IForgFunc<Primitives.String, Core.World> Execute(Primitives.String content)
             {
-                Result = new Core.worldfunc<Primitives.String>(world =>
+                return new Core.worldfunc<Primitives.String>(world =>
                 {
                     Console.WriteLine(content.Value);
                     return content;
                 });
-                _ran = true;
             }
 
             public bool HasResult => _ran;

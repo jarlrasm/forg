@@ -25,19 +25,9 @@ type IForgLambda<'output> =
     
 type IForgParameterlessFunc<'output> =
     inherit IForgLambda<'output>
-    abstract member Execute:unit->unit
-    abstract member HasResult: bool
-    abstract member Result: 'output
+    abstract member Execute:unit->'output
     
 type IForgFunc<'output, 'input> =
     inherit IForgLambda<'output>
-    abstract member Execute:'input->unit
-    abstract member HasResult: bool
-    abstract member Result: 'output
+    abstract member Execute:'input->'output
     
-type Helper() =
-     static member getResult<'output>(func:IForgParameterlessFunc<'output>)=
-         if(not func.HasResult) then
-             func.Execute()
-         func.Result;
-         

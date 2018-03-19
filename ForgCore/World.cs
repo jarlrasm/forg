@@ -14,8 +14,6 @@ namespace ForgCore
         internal class worldfunc<T> : ForgTypes.IForgFunc<T,World>
         {
             private readonly Func<World, T> _sysFunc;
-            private bool _ran=false;
-
             public worldfunc(Func <World,T> sysFunc)
             {
                 _sysFunc = sysFunc;
@@ -23,17 +21,13 @@ namespace ForgCore
 
             public Ast.FullAssignment AST => throw new NotImplementedException();
 
-            public void Execute(World world)
+            public T Execute(World world)
             {
                 if (world == null) throw new ArgumentNullException(nameof(world));
-                Result = _sysFunc(world);
-                _ran = true;
+                return _sysFunc(world);
 
             }
 
-            public bool HasResult => _ran;
-
-            public T Result { get; private set; }
         }
     }
 }
