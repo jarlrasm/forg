@@ -3,8 +3,7 @@ module ForgTypes
 open Ast
 open System
 
-type IForgType =
-    abstract member AST:FullAssignment 
+type IForgType = interface end
     
 type IForgModule =
     inherit IForgType

@@ -7,6 +7,7 @@ open ForgTypes
 type Ref = 
   SystemType of System.Type 
   |Parameter of System.Type 
+  |ClosureRef of System.Type 
 type Symbol = {SymbolName:string; Namespace:List<string>; Ref:Ref;}
 type Context = {Symbols:List<List<Symbol>>}
 
@@ -25,17 +26,26 @@ let createContext (assemblies:List<Assembly>)=
      }
  
 let pushFrame context symbols= {Symbols = symbols::context.Symbols}
-    
+let pushLambda context symbols= {Symbols = symbols::
+                                             (context.Symbols
+                                                 |> List.collect (fun x->x)
+                                                 |> List.filter (fun x-> match x.Ref with
+                                                                                  | Parameter para -> true
+                                                                                  | _ -> false) 
+                                                 |> List.map (fun x -> {SymbolName=x.SymbolName; Namespace=x.Namespace; Ref=ClosureRef (match x.Ref with
+                                                                                                                                        | Parameter para -> para)}))::context.Symbols}
+        
 let popFrame context = {Symbols = context.Symbols.Tail}
-let getParameters context = 
-     context.Symbols 
-     |> List.collect (fun x->x)
-     |> List.filter (fun x-> match x.Ref with
-                                      | Parameter para -> true
-                                      | _ -> false)
     
 let lookup context (reference:Ast.Reference)=
     context.Symbols 
      |> List.collect (fun x->x)
      |> List.filter (fun x-> x.SymbolName = reference.Name)//TODO namespace
      |> List.tryHead
+     
+let getParameters context = 
+     context.Symbols 
+     |> List.collect (fun x->x)
+     |> List.filter (fun x-> match x.Ref with
+                                      | Parameter para -> (lookup context {Name=x.SymbolName; Namespace=[]}).Value = x
+                                      | _ -> false)
