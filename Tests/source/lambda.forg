@@ -6,6 +6,6 @@ where
     where
     [
         get x::(->String) = (x)
-        getAgain x::(String -> String) =(x "Hello world!")
+        getAgain x::(String -> String) =(x "Hello lambda!")
     ]
 ]

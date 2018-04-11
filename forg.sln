@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgCore", "ForgCore\ForgCo
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Interfaces", "Interfaces\Interfaces.fsproj", "{8B7A36C3-3B26-4128-9364-7E8AD10BD4AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{ADB98606-90CC-4B9B-A794-43F7349FC991}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{8B7A36C3-3B26-4128-9364-7E8AD10BD4AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B7A36C3-3B26-4128-9364-7E8AD10BD4AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B7A36C3-3B26-4128-9364-7E8AD10BD4AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADB98606-90CC-4B9B-A794-43F7349FC991}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADB98606-90CC-4B9B-A794-43F7349FC991}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADB98606-90CC-4B9B-A794-43F7349FC991}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADB98606-90CC-4B9B-A794-43F7349FC991}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
