@@ -19,6 +19,7 @@ type IForgAlgebraicType =
     inherit IForgType
     abstract member Value: IForgType
     
+    
 type IForgLambda<'output> =
     inherit IForgType
     

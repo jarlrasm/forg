@@ -2,10 +2,14 @@ LambdaTest = module
 where
 [
   main world::World=
-    ((Debug.print (get fun -> (getAgain fun x::String -> x))) world)
+    ((Debug.print (test "Hello lambda!")) world)
     where
     [
-        get x::(->String) = (x)
-        getAgain x::(String -> String) =(x "Hello lambda!")
+        test str::String=(get fun -> (getAgain fun x::String -> str))
+        where
+        [
+            get x::(->String) = (x)
+            getAgain x::(String -> String) =(x "not this one")
+        ]
     ]
 ]
