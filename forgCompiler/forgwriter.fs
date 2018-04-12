@@ -210,7 +210,6 @@ and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBui
             let lambdaClass=generateLambdaClass lambda typeBuilder context 
             let listType=typeof<System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string,Object>>>
             il.Emit(OpCodes.Newobj,listType.GetConstructor([||]))
-            //TODO Clone existing closure
             for symbol in getParameters context do 
                 il.Emit(OpCodes.Dup)
                 il.Emit(OpCodes.Ldstr, symbol.SymbolName)
@@ -221,8 +220,14 @@ and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBui
             let symbol=ForgContext.lookup context {Name="Closure";Namespace=["ForgCore"]} 
             match symbol.Value.Ref with
             | SystemType close ->
-               il.Emit(OpCodes.Newobj, close.GetConstructor([|listType|]))
-               il.Emit(OpCodes.Newobj, lambdaClass.GetConstructor([|close|]))
+                match closureProp with
+                    |Some closure ->
+                       il.Emit(OpCodes.Ldarg_0) 
+                       il.Emit(OpCodes.Call, closure.GetGetMethod())
+                       il.Emit(OpCodes.Newobj, close.GetConstructor([|listType; close|]))
+                    |_ -> 
+                       il.Emit(OpCodes.Newobj, close.GetConstructor([|listType|]))
+                il.Emit(OpCodes.Newobj, lambdaClass.GetConstructor([|close|]))
             | _ -> raise (InvalidRef symbol.Value.Ref)
                 
                       

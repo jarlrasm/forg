@@ -38,6 +38,10 @@ namespace ForgCore
             {
                 Closed = closed;
             }
+            public Closure(IEnumerable<KeyValuePair<string, object>> closed,Closure anotherClosure)
+            {
+                Closed = anotherClosure.Closed.Concat(closed);
+            }
 
             public IEnumerable<KeyValuePair<string, object>> Closed { get; }
 
@@ -45,7 +49,7 @@ namespace ForgCore
 
             public TItem Get<TItem>(string name)
             {
-                return (TItem) Closed.First(x => x.Key == name).Value;
+                return (TItem) Closed.Last(x => x.Key == name).Value;
             }
         }
     }
