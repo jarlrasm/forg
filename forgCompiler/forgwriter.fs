@@ -14,6 +14,19 @@ open ForgTypes
 exception InvalidRef of Ref
 exception InvalidExpression of Expression
 exception InvalidParameter of Parameter
+
+let getExecuteMethod(t:Type) =
+    (t.GetInterfaces()
+                  |>Seq.filter (fun x->x.IsGenericType&& x.GetGenericTypeDefinition()=typeof<IForgLambda<_>>.GetGenericTypeDefinition())
+                  |>Seq.head).GetMethod("Execute")
+let getSetParameterMethod(t:Type) =
+    if t.IsGenericType&&  t.GetGenericTypeDefinition()=typeof<IForgFunc<_,_>>.GetGenericTypeDefinition() then
+        t.GetMethod("set_Parameter")  
+    else    
+        (t.GetInterfaces()
+                  |>Seq.filter (fun x->x.IsGenericType&& x.GetGenericTypeDefinition()=typeof<IForgFunc<_,_>>.GetGenericTypeDefinition())
+                  |>Seq.head).GetMethod("set_Parameter")                  
+                  
 let createMainFunc (typeBuilder:TypeBuilder) (assemblyBuilder:AssemblyBuilder)  (context:Context)=
    Console.WriteLine "Creating main"
    let methodBuilder = typeBuilder.DefineMethod("Main", MethodAttributes.HideBySig ||| MethodAttributes.Static ||| MethodAttributes.Public, typeof<int>, [|typeof<string>|])                          
@@ -23,9 +36,16 @@ let createMainFunc (typeBuilder:TypeBuilder) (assemblyBuilder:AssemblyBuilder)  
    | SystemType maintype ->
        let constructor= (maintype.GetConstructor(Array.Empty()))
        ilGenerator.Emit(OpCodes.Newobj,constructor)
-       let method=maintype.GetMethod "Execute"
-       ilGenerator.Emit(OpCodes.Newobj,(Seq.head (method.GetParameters())).ParameterType.GetConstructor(Array.Empty()))
-       ilGenerator.Emit(OpCodes.Call, method)
+       ilGenerator.Emit(OpCodes.Dup)
+       let worldClass=ForgContext.lookup context {Name ="WorldCreator"; Namespace =[]}
+       match worldClass.Value.Ref with
+        | SystemType t -> 
+                ilGenerator.Emit(OpCodes.Newobj,t.GetConstructor([||]))
+        | _ -> raise (InvalidRef worldClass.Value.Ref)
+       let propertySetter=getSetParameterMethod maintype
+       ilGenerator.Emit(OpCodes.Call,propertySetter)
+       let executemethod= getExecuteMethod maintype
+       ilGenerator.Emit(OpCodes.Call, executemethod)
    | _ -> raise (InvalidRef mainclass.Value.Ref)
    ilGenerator.Emit(OpCodes.Pop)
    ilGenerator.Emit(OpCodes.Ldc_I4, 0)
@@ -39,8 +59,11 @@ let GetSystemtypeFrom (symbol :Symbol) =
     
 let rec getTypeOf (exp:Expression) (context:Context) : System.Type=
      match exp with
-     | FunctionCall fcall-> //TODO This cannot be right
-        (getTypeOf fcall.Function context).GetMethod("Execute").ReturnType;
+     | FunctionCall fcall-> 
+        ((getTypeOf fcall.Function context).GetInterfaces()
+            |>Seq.filter (fun x->x.IsGenericType&& x.GetGenericTypeDefinition()=typeof<IForgLambda<_>>.GetGenericTypeDefinition())
+            |>Seq.head).
+            GetGenericArguments() |> Seq.head
 
      | Reference ref-> 
            let symbol=ForgContext.lookup context ref
@@ -98,15 +121,18 @@ let rec generateLambdaClass (lambda:Lambda) (typeBuilder:TypeBuilder) (context:C
                 ilGenerator.Emit(OpCodes.Call, closureProp.GetSetMethod(true))
                 ilGenerator.Emit(OpCodes.Ret)
                 
+                let parameterProperty=buildProperty nestedTypeBuilder paramType "Parameter"
+                nestedTypeBuilder.DefineMethodOverride(parameterProperty.GetGetMethod(),functype.GetMethod("get_Parameter"))
+                nestedTypeBuilder.DefineMethodOverride(parameterProperty.GetSetMethod(),functype.GetMethod("set_Parameter"))
                 let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  
                                         MethodAttributes.HideBySig ||| MethodAttributes.Public ||| MethodAttributes.Final ||| MethodAttributes.NewSlot ||| MethodAttributes.Virtual
                                         ,expressionType, [|paramType|] )
                 
                 let ilGenerator = methodBuilder.GetILGenerator() 
-                writeExpression lambda.LambdaExpression ilGenerator context typeBuilder (Some closureProp)
+                writeExpression lambda.LambdaExpression ilGenerator context typeBuilder (Some closureProp) (Some parameterProperty)
                 ilGenerator.Emit(OpCodes.Ret)
                 
-                nestedTypeBuilder.DefineMethodOverride(methodBuilder,functype.GetMethod("Execute"))
+                nestedTypeBuilder.DefineMethodOverride(methodBuilder,getExecuteMethod functype)
                 nestedTypeBuilder.CreateType()
             |None ->
                 let context=ForgContext.pushLambda context []
@@ -126,26 +152,28 @@ let rec generateLambdaClass (lambda:Lambda) (typeBuilder:TypeBuilder) (context:C
                 let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  MethodAttributes.HideBySig ||| MethodAttributes.Public||| MethodAttributes.Final ||| MethodAttributes.NewSlot ||| MethodAttributes.Virtual,expressionType, [||] )
                 
                 let ilGenerator = methodBuilder.GetILGenerator() 
-                writeExpression lambda.LambdaExpression ilGenerator context typeBuilder  (Some closureProp)
+                writeExpression lambda.LambdaExpression ilGenerator context typeBuilder  (Some closureProp) None
                 ilGenerator.Emit(OpCodes.Ret)
-                nestedTypeBuilder.DefineMethodOverride(methodBuilder,functype.GetMethod("Execute"))
+                nestedTypeBuilder.DefineMethodOverride(methodBuilder,getExecuteMethod functype)
                 nestedTypeBuilder.CreateType()
                 
     | _-> raise (InvalidRef symbol.Value.Ref)
     
-and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBuilder:TypeBuilder) (closureProp:Option<PropertyBuilder>)=
+and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBuilder:TypeBuilder) (closureProp:Option<PropertyBuilder>) (parameterProp:Option<PropertyBuilder>)=
      match exp with
      | FunctionCall fcall->
         match fcall.Argument with
         | Some arg ->
-            writeExpression fcall.Function il context typeBuilder closureProp
-            writeExpression arg il context typeBuilder closureProp
+            writeExpression fcall.Function il context typeBuilder closureProp parameterProp
+            il.Emit(OpCodes.Dup)
             let functype=getTypeOf fcall.Function context
-            il.Emit(OpCodes.Callvirt, functype.GetMethod("Execute"))
+            writeExpression arg il context typeBuilder closureProp parameterProp
+            il.Emit(OpCodes.Call, (getSetParameterMethod functype))
+            il.Emit(OpCodes.Callvirt, (getExecuteMethod functype))
         | None ->
-            writeExpression fcall.Function il context typeBuilder closureProp
+            writeExpression fcall.Function il context typeBuilder closureProp parameterProp
             let functype=getTypeOf fcall.Function context
-            il.Emit(OpCodes.Callvirt, functype.GetMethod("Execute"))
+            il.Emit(OpCodes.Callvirt, (getExecuteMethod functype))
 
      | Reference ref-> 
            let maybeSymbol=ForgContext.lookup context ref
@@ -158,7 +186,8 @@ and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBui
                    let constructor=(sys.GetConstructor(Array.Empty()))
                    il.Emit(OpCodes.Newobj, constructor)
                | Parameter parameter -> 
-                   il.Emit(OpCodes.Ldarg_1)
+                   il.Emit(OpCodes.Ldarg_0) 
+                   il.Emit(OpCodes.Call, parameterProp.Value.GetGetMethod())
                | ClosureRef reference ->  
                    il.Emit(OpCodes.Ldarg_0) 
                    il.Emit(OpCodes.Call, closureProp.Value.GetGetMethod())
@@ -198,12 +227,12 @@ and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBui
                          raise (InvalidRef symbol.Value.Ref)
                        for param in parameters do
                             let assignment = constructor.Assignments |> List.find (fun x-> x.Name.ToLower()=param.Name.ToLower())
-                            writeExpression assignment.Value il context  typeBuilder closureProp
+                            writeExpression assignment.Value il context  typeBuilder closureProp parameterProp
                        il.Emit(OpCodes.Newobj, typeconstructor)
                     | _ -> raise  (NotImplementedException "Nope")
                 | None -> ignore()// TODO
      | SimpleDestructor destructor ->
-            writeExpression destructor.DataObject il context typeBuilder closureProp
+            writeExpression destructor.DataObject il context typeBuilder closureProp parameterProp
             let functype=getTypeOf destructor.DataObject context
             il.Emit(OpCodes.Call, functype.GetMethod("get_"+destructor.Name))
      | Lambda lambda -> 
@@ -371,7 +400,7 @@ let rec getLambdaType (lambdatypeRef:LambdaReference) context =
               let lambdaType=typeof<IForgParameterlessFunc<_>>.GetGenericTypeDefinition()
               lambdaType.MakeGenericType([|returnType |])
               
-let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):List<Symbol>=   
+let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):List<Symbol>=   //TODO massive cleanup
         Console.WriteLine ("Creating " + assignment.Name)
         match assignment.Assignment with
         | ParameterlessAssignment(parameterlessassignment)->
@@ -442,7 +471,7 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):L
                 let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  MethodAttributes.HideBySig ||| MethodAttributes.Public||| MethodAttributes.Final ||| MethodAttributes.NewSlot ||| MethodAttributes.Virtual,(getTypeOf expression context), [||] )
                 
                 let ilGenerator = methodBuilder.GetILGenerator() 
-                writeExpression expression ilGenerator context typeBuilder None
+                writeExpression expression ilGenerator context typeBuilder None None
                 ilGenerator.Emit(OpCodes.Ret)
                 
                 let created = nestedTypeBuilder.CreateType()
@@ -469,20 +498,31 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):L
             ilGenerator.Emit(OpCodes.Ldarg_0)
             ilGenerator.Emit(OpCodes.Call,typeof<Object>.GetConstructor(Array.Empty()))
             ilGenerator.Emit(OpCodes.Ret)
-            let argtype= match functionAssignment.Parameter.TypeReference with
-                         |Some typeRef ->
-                            match typeRef with
-                            |SimpleTypeReference simpleTypeReference -> GetSystemtypeFrom (ForgContext.lookup context simpleTypeReference).Value
-                            |LambdaReference lambdatypeRef -> getLambdaType lambdatypeRef context
-                         | None -> raise (NotImplementedException "TODO")
-
-            let context=ForgContext.pushFrame context [{SymbolName = functionAssignment.Parameter.Name; Namespace=[]; Ref= Parameter argtype}]
             
-            let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  MethodAttributes.HideBySig ||| MethodAttributes.Public||| MethodAttributes.Final ||| MethodAttributes.NewSlot ||| MethodAttributes.Virtual,(getTypeOf functionAssignment.Expression context), [|argtype|] )
+            
+            
+            let paramType= match functionAssignment.Parameter.TypeReference with
+                             |Some typeRef ->
+                                match typeRef with
+                                |SimpleTypeReference simpleTypeReference -> GetSystemtypeFrom (ForgContext.lookup context simpleTypeReference).Value
+                                |LambdaReference lambdatypeRef -> getLambdaType lambdatypeRef context
+                             | None -> raise (NotImplementedException "TODO")
+
+            let context=ForgContext.pushFrame context [{SymbolName = functionAssignment.Parameter.Name; Namespace=[]; Ref= Parameter paramType}]
+            let returntype=(getTypeOf functionAssignment.Expression context);
+            let functype=typeof<IForgFunc<_,_>>.GetGenericTypeDefinition().MakeGenericType(returntype, paramType)
+            nestedTypeBuilder.AddInterfaceImplementation(functype)
+            let paramLambdatype=typeof<IForgLambda<_>>.GetGenericTypeDefinition().MakeGenericType( paramType)
+            let parameterProperty=buildProperty nestedTypeBuilder paramLambdatype "Parameter"
+            nestedTypeBuilder.DefineMethodOverride(parameterProperty.GetGetMethod(),functype.GetMethod("get_Parameter"))
+            nestedTypeBuilder.DefineMethodOverride(parameterProperty.GetSetMethod(),functype.GetMethod("set_Parameter"))
+            
+            let methodBuilder = nestedTypeBuilder.DefineMethod("Execute",  MethodAttributes.HideBySig ||| MethodAttributes.Public||| MethodAttributes.Final ||| MethodAttributes.NewSlot ||| MethodAttributes.Virtual,returntype, [||] )
             
             let ilGenerator = methodBuilder.GetILGenerator() 
-            writeExpression functionAssignment.Expression ilGenerator context typeBuilder None
+            writeExpression functionAssignment.Expression ilGenerator context typeBuilder None (Some parameterProperty)
             ilGenerator.Emit(OpCodes.Ret)
+            nestedTypeBuilder.DefineMethodOverride(methodBuilder,getExecuteMethod functype)
             let created = nestedTypeBuilder.CreateType()
             [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
         | TypeDeclaration typedeclaration ->

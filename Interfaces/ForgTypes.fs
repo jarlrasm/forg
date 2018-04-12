@@ -22,12 +22,12 @@ type IForgAlgebraicType =
     
 type IForgLambda<'output> =
     inherit IForgType
+    abstract member Execute:unit->'output
     
 type IForgParameterlessFunc<'output> =
     inherit IForgLambda<'output>
-    abstract member Execute:unit->'output
     
 type IForgFunc<'output, 'input> =
     inherit IForgLambda<'output>
-    abstract member Execute:'input->'output
+    abstract member Parameter: IForgLambda<'input> with get, set
     

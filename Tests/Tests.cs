@@ -59,9 +59,6 @@ namespace Tests
             string result = "";
             using (Process process = Process.Start(start))
             {
-                //
-                // Read in all the text from the process with the StreamReader.
-                //
                 using (StreamReader reader = process.StandardOutput)
                 {
                     result += reader.ReadToEnd();

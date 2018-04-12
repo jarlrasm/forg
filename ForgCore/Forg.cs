@@ -27,7 +27,6 @@ namespace ForgCore
                 return new Bool(new Primitives.Atom("false"));
             }
 
-            public Ast.FullAssignment AST => throw new NotImplementedException();
 
             public ForgTypes.IForgType Value { get; }
         }
@@ -45,7 +44,6 @@ namespace ForgCore
 
             public IEnumerable<KeyValuePair<string, object>> Closed { get; }
 
-            public Ast.FullAssignment AST => throw new NotImplementedException();
 
             public TItem Get<TItem>(string name)
             {

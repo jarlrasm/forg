@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
 using Microsoft.FSharp.Collections;
 
 namespace ForgCore
@@ -7,6 +8,15 @@ namespace ForgCore
     {
         public Ast.FullAssignment AST => new Ast.FullAssignment("Core",Ast.Assignment.NewParameterlessAssignment(Ast.ParameterlessAssignment.ModuleKeyword), FSharpList<Ast.FullAssignment>.Empty);
 
+
+        public class WorldCreator : ForgTypes.IForgLambda<World>
+        {
+            public World Execute()
+            {
+                return new World();
+                    
+            }
+        }
         public class World : ForgTypes.IForgType
         {
             public Ast.FullAssignment AST => new Ast.FullAssignment("World",Ast.Assignment.NewTypeDeclaration(Ast.TypeDeclaration.Primitive), FSharpList<Ast.FullAssignment>.Empty); 
@@ -14,18 +24,24 @@ namespace ForgCore
         internal class worldfunc<T> : ForgTypes.IForgFunc<T,World>
         {
             private readonly Func<World, T> _sysFunc;
+            private ForgTypes.IForgLambda<World> _parameter;
+
             public worldfunc(Func <World,T> sysFunc)
             {
                 _sysFunc = sysFunc;
             }
 
-            public Ast.FullAssignment AST => throw new NotImplementedException();
-
-            public T Execute(World world)
+            public T Execute()
             {
-                if (world == null) throw new ArgumentNullException(nameof(world));
-                return _sysFunc(world);
+                return _sysFunc(_parameter.Execute());
 
+            }
+
+
+            public ForgTypes.IForgLambda<World> Parameter
+            {
+                get => _parameter;
+                set => _parameter = value;
             }
 
         }

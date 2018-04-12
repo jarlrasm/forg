@@ -11,22 +11,23 @@ namespace ForgCore
 
         public class print : ForgTypes.IForgFunc<ForgTypes.IForgFunc<Primitives.String,Core.World>, Primitives.String>
         {
-            private bool _ran;
+            private  ForgTypes.IForgLambda<Primitives.String> _parameter;
 
 
-            public Ast.FullAssignment AST => throw new NotImplementedException();
-
-            public ForgTypes.IForgFunc<Primitives.String, Core.World> Execute(Primitives.String content)
+            public ForgTypes.IForgFunc<Primitives.String, Core.World> Execute()
             {
                 return new Core.worldfunc<Primitives.String>(world =>
                 {
-                    Console.WriteLine(content.Value);
-                    return content;
+                    Console.WriteLine(_parameter.Execute().Value);
+                    return _parameter.Execute();
                 });
             }
 
-            public bool HasResult => _ran;
-            public ForgTypes.IForgFunc<Primitives.String,Core.World> Result { get; private set; }
+            public ForgTypes.IForgLambda<Primitives.String> Parameter
+            {
+                get => _parameter;
+                set => _parameter = value;
+            }
         }
         
     }
