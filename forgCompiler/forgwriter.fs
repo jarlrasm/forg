@@ -8,6 +8,7 @@ open ForgContext
 open ForgParser
 open ForgParser
 open ForgParser
+open ForgParser
 open System
 open ForgTypes
 
@@ -16,9 +17,13 @@ exception InvalidExpression of Expression
 exception InvalidParameter of Parameter
 
 let getExecuteMethod(t:Type) =
+    if t.IsGenericType&&  t.GetGenericTypeDefinition()=typeof<IForgLambda<_>>.GetGenericTypeDefinition() then
+        t.GetMethod("Execute")  
+    else    
     (t.GetInterfaces()
                   |>Seq.filter (fun x->x.IsGenericType&& x.GetGenericTypeDefinition()=typeof<IForgLambda<_>>.GetGenericTypeDefinition())
                   |>Seq.head).GetMethod("Execute")
+                  
 let getSetParameterMethod(t:Type) =
     if t.IsGenericType&&  t.GetGenericTypeDefinition()=typeof<IForgFunc<_,_>>.GetGenericTypeDefinition() then
         t.GetMethod("set_Parameter")  
@@ -57,6 +62,28 @@ let GetSystemtypeFrom (symbol :Symbol) =
     | SystemType t ->  t
     | _ -> raise (InvalidRef symbol.Ref)
     
+let rec getLambdaType (lambdatypeRef:LambdaReference) context =
+    let returnType=match lambdatypeRef.Return with
+                   |SimpleTypeReference simpleTypeReference -> GetSystemtypeFrom (ForgContext.lookup context simpleTypeReference).Value
+                   |LambdaReference lambdatypeRef -> getLambdaType lambdatypeRef context
+    match lambdatypeRef.Parameter with
+        |Some parameter-> let parameterType=
+                            match parameter with
+                            |SimpleTypeReference simpleTypeReference -> GetSystemtypeFrom (ForgContext.lookup context simpleTypeReference).Value
+                            |LambdaReference lambdatypeRef -> getLambdaType lambdatypeRef context
+                          let lambdaType=typeof<ForgTypes.IForgFunc<_, _>>.GetGenericTypeDefinition()
+                          lambdaType.MakeGenericType([|returnType ; parameterType|])
+        |None -> 
+              let lambdaType=typeof<IForgParameterlessFunc<_>>.GetGenericTypeDefinition()
+              lambdaType.MakeGenericType([|returnType |])
+             
+let rec getLambdaParameterType (lambdaParam:Parameter) context =
+          match lambdaParam.TypeReference  with
+            Some typeRef ->
+                match typeRef with
+                |SimpleTypeReference simpleTypeReference -> GetSystemtypeFrom (ForgContext.lookup context simpleTypeReference).Value
+                |LambdaReference lambdatypeRef -> raise (NotImplementedException "Nope")
+                 
 let rec getTypeOf (exp:Expression) (context:Context) : System.Type=
      match exp with
      | FunctionCall fcall-> 
@@ -76,9 +103,17 @@ let rec getTypeOf (exp:Expression) (context:Context) : System.Type=
                reference
            | _ -> raise (InvalidRef symbol.Value.Ref)
      | StringLiteral str-> 
-           typeof<string>
+           let symbol=ForgContext.lookup context {Name="String"; Namespace=[]}
+           match symbol.Value.Ref with
+           | SystemType sys ->
+               sys
+           | _ -> raise (InvalidRef symbol.Value.Ref)
      | IntLiteral intl-> 
-           typeof<int>
+           let symbol=ForgContext.lookup context {Name="Int"; Namespace=[]}
+           match symbol.Value.Ref with
+           | SystemType sys ->
+               sys
+           | _ -> raise (InvalidRef symbol.Value.Ref)
      | Constructor constructor-> 
            let symbol=ForgContext.lookup context constructor.TypeReference.Value //Again:TODO
            match symbol.Value.Ref with
@@ -89,14 +124,21 @@ let rec getTypeOf (exp:Expression) (context:Context) : System.Type=
            | ClosureRef reference -> 
                reference
            | _ -> raise (InvalidRef symbol.Value.Ref)
+     | Lambda lambda ->
+        let returnType=getTypeOf lambda.LambdaExpression context
+        match lambda.Parameter with
+        |Some parameter-> let parameterType=getLambdaParameterType parameter context
+                          let lambdaType=typeof<ForgTypes.IForgFunc<_, _>>.GetGenericTypeDefinition()
+                          lambdaType.MakeGenericType([|returnType ; parameterType|])
+        |None -> 
+              let lambdaType=typeof<IForgParameterlessFunc<_>>.GetGenericTypeDefinition()
+              lambdaType.MakeGenericType([|returnType |])
+     
+     | SimpleDestructor destructor->
+         let functype=getTypeOf destructor.DataObject context
+         functype.GetMethod("get_"+destructor.Name).ReturnType
+              
            
-let rec getLambdaParameterType (lambdaParam:Parameter) context =
-          match lambdaParam.TypeReference  with
-            Some typeRef ->
-                match typeRef with
-                |SimpleTypeReference simpleTypeReference -> GetSystemtypeFrom (ForgContext.lookup context simpleTypeReference).Value
-                |LambdaReference lambdatypeRef -> raise (NotImplementedException "Nope")
-                
 let rec generateLambdaClass (lambda:Lambda) (typeBuilder:TypeBuilder) (context:Context) =
     let name="ForgLambda"+Guid.NewGuid().ToString("N")
     printf "Creating %A\n" name
@@ -158,7 +200,31 @@ let rec generateLambdaClass (lambda:Lambda) (typeBuilder:TypeBuilder) (context:C
                 nestedTypeBuilder.CreateType()
                 
     | _-> raise (InvalidRef symbol.Value.Ref)
-    
+and generateLambda  (lambda:Lambda) (typeBuilder:TypeBuilder) (context:Context) (il:ILGenerator) (closureProp:Option<PropertyBuilder>) (parameterProp:Option<PropertyBuilder>)=    
+            let lambdaClass=generateLambdaClass lambda typeBuilder context 
+            let listType=typeof<System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string,Object>>>
+            il.Emit(OpCodes.Newobj,listType.GetConstructor([||]))
+            for symbol in getParameters context do 
+                il.Emit(OpCodes.Dup)
+                il.Emit(OpCodes.Ldstr, symbol.SymbolName)
+                il.Emit(OpCodes.Ldarg_0)
+                il.Emit(OpCodes.Callvirt, parameterProp.Value.GetGetMethod())
+                il.Emit(OpCodes.Newobj,typeof<System.Collections.Generic.KeyValuePair<string,Object>>.GetConstructor([|typeof<string>;typeof<Object>|]))
+                il.Emit(OpCodes.Callvirt, listType.GetMethod("Add"))
+                
+            let symbol=ForgContext.lookup context {Name="Closure";Namespace=["ForgCore"]} 
+            match symbol.Value.Ref with
+            | SystemType close ->
+                match closureProp with
+                    |Some closure ->
+                       il.Emit(OpCodes.Ldarg_0) 
+                       il.Emit(OpCodes.Call, closure.GetGetMethod())
+                       il.Emit(OpCodes.Newobj, close.GetConstructor([|listType; close|]))
+                    |_ -> 
+                       il.Emit(OpCodes.Newobj, close.GetConstructor([|listType|]))
+                il.Emit(OpCodes.Newobj, lambdaClass.GetConstructor([|close|]))
+            | _ -> raise (InvalidRef symbol.Value.Ref)
+            
 and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBuilder:TypeBuilder) (closureProp:Option<PropertyBuilder>) (parameterProp:Option<PropertyBuilder>)=
      match exp with
      | FunctionCall fcall->
@@ -167,8 +233,8 @@ and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBui
             writeExpression fcall.Function il context typeBuilder closureProp parameterProp
             il.Emit(OpCodes.Dup)
             let functype=getTypeOf fcall.Function context
-            writeExpression arg il context typeBuilder closureProp parameterProp
-            il.Emit(OpCodes.Call, (getSetParameterMethod functype))
+            generateLambda  {Parameter=None; LambdaExpression=arg;} typeBuilder context il closureProp parameterProp
+            il.Emit(OpCodes.Callvirt, (getSetParameterMethod functype))
             il.Emit(OpCodes.Callvirt, (getExecuteMethod functype))
         | None ->
             writeExpression fcall.Function il context typeBuilder closureProp parameterProp
@@ -186,8 +252,10 @@ and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBui
                    let constructor=(sys.GetConstructor(Array.Empty()))
                    il.Emit(OpCodes.Newobj, constructor)
                | Parameter parameter -> 
+                   let lambdaType=typeof<IForgLambda<_>>.GetGenericTypeDefinition().MakeGenericType([|parameter|])
                    il.Emit(OpCodes.Ldarg_0) 
                    il.Emit(OpCodes.Call, parameterProp.Value.GetGetMethod())
+                   il.Emit(OpCodes.Callvirt, (getExecuteMethod lambdaType) )
                | ClosureRef reference ->  
                    il.Emit(OpCodes.Ldarg_0) 
                    il.Emit(OpCodes.Call, closureProp.Value.GetGetMethod())
@@ -195,7 +263,9 @@ and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBui
                    let closuresymbol=ForgContext.lookup context {Name="Closure";Namespace=["ForgCore"]} 
                    match closuresymbol.Value.Ref with
                     | SystemType close ->
-                        il.Emit(OpCodes.Call, close.GetMethod("Get").MakeGenericMethod([|reference|]))
+                        let lambdaType=typeof<IForgLambda<_>>.GetGenericTypeDefinition().MakeGenericType([|reference|])
+                        il.Emit(OpCodes.Call, close.GetMethod("Get").MakeGenericMethod([|lambdaType|]))
+                        il.Emit(OpCodes.Callvirt, (getExecuteMethod lambdaType) )
                     | _ -> raise (InvalidRef closuresymbol.Value.Ref)
                | _ -> raise (InvalidRef symbol.Ref)
      | StringLiteral str-> 
@@ -236,29 +306,7 @@ and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBui
             let functype=getTypeOf destructor.DataObject context
             il.Emit(OpCodes.Call, functype.GetMethod("get_"+destructor.Name))
      | Lambda lambda -> 
-            let lambdaClass=generateLambdaClass lambda typeBuilder context 
-            let listType=typeof<System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string,Object>>>
-            il.Emit(OpCodes.Newobj,listType.GetConstructor([||]))
-            for symbol in getParameters context do 
-                il.Emit(OpCodes.Dup)
-                il.Emit(OpCodes.Ldstr, symbol.SymbolName)
-                il.Emit(OpCodes.Ldarg_1)
-                il.Emit(OpCodes.Newobj,typeof<System.Collections.Generic.KeyValuePair<string,Object>>.GetConstructor([|typeof<string>;typeof<Object>|]))
-                il.Emit(OpCodes.Callvirt, listType.GetMethod("Add"))
-                
-            let symbol=ForgContext.lookup context {Name="Closure";Namespace=["ForgCore"]} 
-            match symbol.Value.Ref with
-            | SystemType close ->
-                match closureProp with
-                    |Some closure ->
-                       il.Emit(OpCodes.Ldarg_0) 
-                       il.Emit(OpCodes.Call, closure.GetGetMethod())
-                       il.Emit(OpCodes.Newobj, close.GetConstructor([|listType; close|]))
-                    |_ -> 
-                       il.Emit(OpCodes.Newobj, close.GetConstructor([|listType|]))
-                il.Emit(OpCodes.Newobj, lambdaClass.GetConstructor([|close|]))
-            | _ -> raise (InvalidRef symbol.Value.Ref)
-                
+             generateLambda  lambda typeBuilder context il closureProp parameterProp
                       
              
      
@@ -385,20 +433,6 @@ let writeType  typedeclaration (typeBuilder:TypeBuilder) (context:Context)=
         | Algebraic algebraic->writeAlgebraicType algebraic typeBuilder context    
         | Atom atom-> atom|> ignore  //TODO?
         | Primitive -> ignore() //Should never happen(famous last words)
-let rec getLambdaType (lambdatypeRef:LambdaReference) context =
-    let returnType=match lambdatypeRef.Return with
-                   |SimpleTypeReference simpleTypeReference -> GetSystemtypeFrom (ForgContext.lookup context simpleTypeReference).Value
-                   |LambdaReference lambdatypeRef -> getLambdaType lambdatypeRef context
-    match lambdatypeRef.Parameter with
-        |Some parameter-> let parameterType=
-                            match parameter with
-                            |SimpleTypeReference simpleTypeReference -> GetSystemtypeFrom (ForgContext.lookup context simpleTypeReference).Value
-                            |LambdaReference lambdatypeRef -> getLambdaType lambdatypeRef context
-                          let lambdaType=typeof<ForgTypes.IForgFunc<_, _>>.GetGenericTypeDefinition()
-                          lambdaType.MakeGenericType([|returnType ; parameterType|])
-        |None -> 
-              let lambdaType=typeof<IForgParameterlessFunc<_>>.GetGenericTypeDefinition()
-              lambdaType.MakeGenericType([|returnType |])
               
 let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):List<Symbol>=   //TODO massive cleanup
         Console.WriteLine ("Creating " + assignment.Name)
@@ -447,7 +481,7 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):L
                 [{SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
                 
              | Expression expression -> 
-                let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.NestedPublic)//TODO  implement interface
+                let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.NestedPublic)
                 
                 
                 //Ugh.. Runs inner expression with a ever growing context
@@ -461,7 +495,9 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):L
                     frame<-(List.append [symbol] frame)
                   
                 let context=ForgContext.pushFrame context frame
-                
+                let returntype=(getTypeOf expression context);
+                let functype=typeof<IForgParameterlessFunc<_>>.GetGenericTypeDefinition().MakeGenericType(returntype)
+                nestedTypeBuilder.AddInterfaceImplementation(functype)
                 let constructorBuilder=nestedTypeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [||] )
                 let ilGenerator=constructorBuilder.GetILGenerator()
                 ilGenerator.Emit(OpCodes.Ldarg_0)
@@ -473,13 +509,14 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):L
                 let ilGenerator = methodBuilder.GetILGenerator() 
                 writeExpression expression ilGenerator context typeBuilder None None
                 ilGenerator.Emit(OpCodes.Ret)
+                nestedTypeBuilder.DefineMethodOverride(methodBuilder,getExecuteMethod functype)
                 
                 let created = nestedTypeBuilder.CreateType()
                 [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
                 
         | FunctionAssignment functionAssignment -> 
         
-            let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.NestedPublic)//TODO  implement interface
+            let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.NestedPublic)
 
             //Ugh.. Runs inner expression with a ever growing context
             let mutable frame = []
