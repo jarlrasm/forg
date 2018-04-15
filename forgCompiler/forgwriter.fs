@@ -311,7 +311,7 @@ and writeExpression (exp:Expression) (il:ILGenerator) (context:Context) (typeBui
              
      
 and buildProperty (typeBuilder:TypeBuilder) (systemType:System.Type) (name:string) : PropertyBuilder=
-     printf "Creating %s\n"  name
+     printf "Creating property %s of type %A\n"  name systemType
      let backingName="_"+name.ToLower()
      let field = typeBuilder.DefineField(backingName,  systemType,  FieldAttributes.Private)
      let propertyBuilder = typeBuilder.DefineProperty(name,PropertyAttributes.None,systemType,null)
@@ -363,7 +363,7 @@ let writeDataType (data:DataType) (typeBuilder:TypeBuilder) (context:Context)=
     for prop in props do
         ilGenerator.Emit(OpCodes.Ldarg_0)
         ilGenerator.Emit(OpCodes.Ldarg,count)
-        ilGenerator.Emit(OpCodes.Call, prop.GetSetMethod(true))
+        ilGenerator.Emit(OpCodes.Callvirt, prop.GetSetMethod(true))
         constructorBuilder.DefineParameter(int count,ParameterAttributes.None,prop.Name) |>ignore
         count <- count + 1s
     ilGenerator.Emit(OpCodes.Ret)
@@ -372,7 +372,7 @@ let buildPrivateDefaultConstructor (typeBuilder:TypeBuilder)=
     let constructorBuilder=typeBuilder.DefineConstructor(MethodAttributes.Private, CallingConventions.Standard, [||] )
     let ilGenerator=constructorBuilder.GetILGenerator()
     ilGenerator.Emit(OpCodes.Ldarg_0)
-    ilGenerator.Emit(OpCodes.Call,typeof<Object>.GetConstructor(Array.Empty()))
+    ilGenerator.Emit(OpCodes.Callvirt,typeof<Object>.GetConstructor(Array.Empty()))
     ilGenerator.Emit(OpCodes.Ret)
     constructorBuilder
     
@@ -383,7 +383,7 @@ let buildPropertySettingConstructor (typeBuilder:TypeBuilder) (propertyBuilder:P
     ilGenerator.Emit(OpCodes.Call,typeof<Object>.GetConstructor(Array.Empty()))
     ilGenerator.Emit(OpCodes.Ldarg_0)
     ilGenerator.Emit(OpCodes.Ldarg_1)
-    ilGenerator.Emit(OpCodes.Call,propertyBuilder.GetSetMethod(true))
+    ilGenerator.Emit(OpCodes.Callvirt,propertyBuilder.GetSetMethod(true))
     ilGenerator.Emit(OpCodes.Ret)
     constructorBuilder
 
@@ -433,6 +433,11 @@ let writeType  typedeclaration (typeBuilder:TypeBuilder) (context:Context)=
         | Algebraic algebraic->writeAlgebraicType algebraic typeBuilder context    
         | Atom atom-> atom|> ignore  //TODO?
         | Primitive -> ignore() //Should never happen(famous last words)
+        
+let writeGenericType  genericTypedeclaration (typeBuilder:TypeBuilder) (context:Context)= 
+     let parameters=typeBuilder.DefineGenericParameters(List.map (fun (x:Parameter)->x.Name) genericTypedeclaration.Parameters |> List.toArray) 
+                        |> Array.map (fun x-> {SymbolName=x.Name;Namespace=[];Ref=SystemType x}) |>Array.toList
+     writeType genericTypedeclaration.TypeDeclaration typeBuilder (pushFrame context parameters)
               
 let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):List<Symbol>=   //TODO massive cleanup
         Console.WriteLine ("Creating " + assignment.Name)
@@ -563,13 +568,18 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):L
             let created = nestedTypeBuilder.CreateType()
             [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
         | TypeDeclaration typedeclaration ->
-            let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.NestedPublic)//TODO  implement interface
+            let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.NestedPublic)
             writeType typedeclaration nestedTypeBuilder context
             let created = nestedTypeBuilder.CreateType()
             [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
-        | GenericTypeDeclaration generictypedecl -> []
+        | GenericTypeDeclaration generictypedecl -> 
+            let nestedTypeBuilder=typeBuilder.DefineNestedType(assignment.Name,TypeAttributes.NestedPublic)
+            writeGenericType generictypedecl nestedTypeBuilder context
+            let created = nestedTypeBuilder.CreateType()
+            [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
 
 let push (code:List<FullAssignment>) (context:Context):unit=  
+    Console.WriteLine(code)
     for assignment in code do
         writeAssignment assignment null context|>ignore
     Console.WriteLine "Done"
