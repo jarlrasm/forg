@@ -403,6 +403,10 @@ let writeAlgebraicType (algebraic:AlgebraicType) (typeBuilder:TypeBuilder) (cont
                                 | SimpleTypeReference tref -> GetSystemtypeFrom (ForgContext.lookup context tref).Value //TODO check(many places)
                         |None-> raise (NotImplementedException "TODO")
            let nestedtypeBuilder= typeBuilder.DefineNestedType(param.Name,TypeAttributes.NestedPublic)
+           let systype=if typeof<GenericTypeParameterBuilder> = systype.GetType() then
+                        (nestedtypeBuilder.DefineGenericParameters([|systype.Name|])|>Seq.head:>System.Type)
+                       else
+                         systype
            let propertyBuilder= buildProperty nestedtypeBuilder systype "Value"
            let innerClassConstructor=buildPropertySettingConstructor nestedtypeBuilder propertyBuilder MethodAttributes.Public
            let methodBuilder = typeBuilder.DefineMethod("New"+param.Name, MethodAttributes.Static |||  MethodAttributes.HideBySig ||| MethodAttributes.Public,typeBuilder, [|systype|] )
@@ -579,7 +583,6 @@ let rec writeAssignment assignment (typeBuilder:TypeBuilder) (context:Context):L
             [ {SymbolName=created.Name;Namespace=[];Ref=SystemType created}]
 
 let push (code:List<FullAssignment>) (context:Context):unit=  
-    Console.WriteLine(code)
     for assignment in code do
         writeAssignment assignment null context|>ignore
     Console.WriteLine "Done"
