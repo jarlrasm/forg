@@ -9,6 +9,6 @@ let main argv =
     
     match run ForgParser.parser code with
     | Success(result, _, _)   -> ForgWriter.push result context;
+                                 0
     | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg
-    
-    0 // return an integer exit code
+                                 1

@@ -1,10 +1,12 @@
 module Ast
 
 type Reference = {Name:string; Namespace:List<string>}
+type GenericTypeReference = {Name:string; GenericParameterName:string; Namespace:List<string>}
 type LambdaReference = {Parameter: Option<ParameterType>; Return:ParameterType}
 and ParameterType =
     |SimpleTypeReference of Reference
     |LambdaReference of LambdaReference
+    |GenericTypeReference of GenericTypeReference
     
 type Parameter = 
     {Name : string;
@@ -15,11 +17,13 @@ and NameWithValue = {Name:string; Value:Expression}
 and Constructor= {Assignments:List<NameWithValue>;TypeReference: Option<Reference>}
 and SimpleDestructor= {DataObject:Expression ;Name:string;}
 and Lambda= {Parameter:Option<Parameter>; LambdaExpression:Expression;}
+and ListLiteral= {Expressions:List<Expression>}
 and Expression = 
     FunctionCall of FunctionCall
     |Reference of Reference
     |StringLiteral of string
     |IntLiteral of int
+    |ListLiteral of ListLiteral
     |Constructor of Constructor
     |SimpleDestructor of SimpleDestructor
     |Lambda of Lambda

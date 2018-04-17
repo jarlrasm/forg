@@ -1,0 +1,11 @@
+ListTest=module 
+ where
+ [
+   main world::World=
+     ((Debug.print (first test)) world)
+     where
+     [
+        first list::List<String> = (List.head list)
+        test = ["Hello", "world"]
+     ]
+ ]

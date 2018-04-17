@@ -64,6 +64,9 @@
     <Content Include="source\lambda.forg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="source\lists.forg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="source\typetest.forg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

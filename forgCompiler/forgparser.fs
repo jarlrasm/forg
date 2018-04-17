@@ -35,13 +35,25 @@ let stringLiteral =
             (stringsSepBy normalCharSnippet escapedChar)
 let intLiteral = pint32
     
+
 let expression, expressionImplementation= createParserForwardedToRef()
 let functioncall:Parser<FunctionCall> = (pipe2 (spaces>>. pstring "(" >>. spaces >>. expression .>> spaces) ((opt expression) .>> spaces .>> pstring ")" .>> spaces)  (fun f arg-> 
     {Function = f; Argument=arg}))
+ 
+let listLiteral =
+    (pstring "[")>>. (sepBy expression (pstring ",")) .>> (pstring "]")|>> fun x -> {Expressions =x} 
+     
+let namespaces =
+    (many name  .>> (pstring ".")) 
     
 let reference: Parser<Reference> =
-    spaces >>. (sepBy1 name (pstring ".") )|>> (fun x -> {Name=List.rev(x).Head; Namespace =List.rev(x).Tail|>List.rev})
+    spaces >>. (attempt  (pipe2 namespaces name (fun namespaces name  -> {Name=name; Namespace =namespaces})))
+     <|> (name |>> fun x-> {Name=x; Namespace =[]})
 
+let genericReference: Parser<GenericTypeReference> =
+    spaces >>. (attempt  (pipe3 namespaces name ((pstring "<") >>. name .>> (pstring ">"))  (fun namespaces name genericname -> {Name=name;GenericParameterName =genericname; Namespace =namespaces})))
+     <|> (pipe2 name ((pstring "<") >>. name .>> (pstring ">"))  (fun  name genericname -> {Name=name;GenericParameterName =genericname; Namespace =[]}))
+    
 let constructorAssignment:Parser<NameWithValue> =
     pipe2 (spaces >>. name ) ((spaces >>. (pstring "="))>>. spaces >>. expression)(fun name exp -> {Name=name; Value =exp})
         
@@ -67,6 +79,7 @@ do expressionImplementation :=
     <|>(attempt reference |>> fun x -> Expression.Reference x)
     <|>(attempt stringLiteral |>> fun x -> Expression.StringLiteral x)
     <|>(attempt intLiteral |>> fun x -> Expression.IntLiteral x)
+    <|>(attempt listLiteral |>> fun x -> Expression.ListLiteral x)
     <|>(constructor |>> fun x -> Expression.Constructor x)
 
 let assignment, assignmentImplementation= createParserForwardedToRef()
@@ -82,6 +95,7 @@ let lambdaRef =
     
 do parameterTypenImplementation  :=
     ((attempt reference) |>> fun x -> SimpleTypeReference x)
+    <|>((attempt genericReference) |>> fun x -> GenericTypeReference x)
     <|>((lambdaRef) |>> fun x -> LambdaReference x)
     
 do parameterImplementation := 

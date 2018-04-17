@@ -5,7 +5,7 @@ where
     ((Debug.print (test "Hello lambda!")) world)
     where
     [
-        test str::String=(get fun -> (getAgain fun x::String -> str))
+        test str::String =(get fun -> (getAgain fun x::String -> str))
         where
         [
             get x::(->String) = (x)
