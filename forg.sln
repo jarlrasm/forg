@@ -8,7 +8,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgCore", "ForgCore\ForgCo
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Interfaces", "Interfaces\Interfaces.fsproj", "{8B7A36C3-3B26-4128-9364-7E8AD10BD4AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{ADB98606-90CC-4B9B-A794-43F7349FC991}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{188F78C5-F331-435F-B96E-CB2D7C329D65}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SystemTests", "Tests\SystemTests\SystemTests.fsproj", "{9C47AA98-92C2-4405-8ABD-81810D6DF8AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,9 +34,12 @@ Global
 		{8B7A36C3-3B26-4128-9364-7E8AD10BD4AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B7A36C3-3B26-4128-9364-7E8AD10BD4AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B7A36C3-3B26-4128-9364-7E8AD10BD4AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ADB98606-90CC-4B9B-A794-43F7349FC991}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ADB98606-90CC-4B9B-A794-43F7349FC991}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ADB98606-90CC-4B9B-A794-43F7349FC991}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ADB98606-90CC-4B9B-A794-43F7349FC991}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C47AA98-92C2-4405-8ABD-81810D6DF8AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C47AA98-92C2-4405-8ABD-81810D6DF8AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C47AA98-92C2-4405-8ABD-81810D6DF8AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C47AA98-92C2-4405-8ABD-81810D6DF8AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9C47AA98-92C2-4405-8ABD-81810D6DF8AA} = {188F78C5-F331-435F-B96E-CB2D7C329D65}
 	EndGlobalSection
 EndGlobal
