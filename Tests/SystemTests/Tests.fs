@@ -11,13 +11,13 @@ let sourcePath ()= Path.GetDirectoryName(Assembly.GetExecutingAssembly().Locatio
 let sourceFiles ()= System.IO.Directory.GetFiles(sourcePath())  
 let ExecuteProgramAndReturnStdOut filename=
    let start = new ProcessStartInfo();
-   start.FileName = filename;
-   start.UseShellExecute = false;
-   start.RedirectStandardOutput = true;
-   let result = "";
+   start.FileName <- filename;
+   start.UseShellExecute <- false;
+   start.RedirectStandardOutput <- true;
+   let mutable result = "";
    use  process = Process.Start(start) 
    use reader = process.StandardOutput
-   result = result + reader.ReadToEnd()
+   result <- result + reader.ReadToEnd()
    process.WaitForExit();
    result;
 let GetSourceFileName name = sprintf "%s/%s" (sourcePath()) name;
