@@ -1,7 +1,7 @@
 module Ast
 
 type Reference = {Name:string; Namespace:List<string>}
-type GenericTypeReference = {Name:string; GenericParameterName:string; Namespace:List<string>}
+type GenericTypeReference = {Reference:Reference; GenericReference:Reference;}
 type LambdaReference = {Parameter: Option<ParameterType>; Return:ParameterType}
 and ParameterType =
     |SimpleTypeReference of Reference

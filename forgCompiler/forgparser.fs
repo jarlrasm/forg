@@ -13,6 +13,8 @@ type Parser<'t> = Parser<'t, UserState>
 let moduleKeyword = pstring "module"
 let whereKeyword = pstring "where"
 let typeKeyword = pstring "type"
+let funKeyword = pstring "fun"
+
 let equalityKeyword = pstring "="
 
 let name : Parser<string> = 
@@ -37,50 +39,60 @@ let intLiteral = pint32
     
 
 let expression, expressionImplementation= createParserForwardedToRef()
-let functioncall:Parser<FunctionCall> = (pipe2 (spaces>>. pstring "(" >>. spaces >>. expression .>> spaces) ((opt expression) .>> spaces .>> pstring ")" .>> spaces)  (fun f arg-> 
-    {Function = f; Argument=arg}))
- 
+
 let listLiteral =
     (pstring "[")>>. (sepBy expression (pstring ",")) .>> (pstring "]")|>> fun x -> {Expressions =x} 
+    
+let functioncall:Parser<FunctionCall> = (pipe2 (pstring "(" >>.  expression ) ((opt expression) .>> pstring ")")  (fun f arg-> 
+    {Function = f; Argument=arg}))
+ 
      
 let namespaces =
-    (many name  .>> (pstring ".")) 
+    (many1 name  .>> (pstring ".")) 
     
 let reference: Parser<Reference> =
-    spaces >>. (attempt  (pipe2 namespaces name (fun namespaces name  -> {Name=name; Namespace =namespaces})))
+    (attempt  (pipe2 namespaces name (fun namespaces name  -> {Name=name; Namespace =namespaces})))
      <|> (name |>> fun x-> {Name=x; Namespace =[]})
 
 let genericReference: Parser<GenericTypeReference> =
-    spaces >>. (attempt  (pipe3 namespaces name ((pstring "<") >>. name .>> (pstring ">"))  (fun namespaces name genericname -> {Name=name;GenericParameterName =genericname; Namespace =namespaces})))
-     <|> (pipe2 name ((pstring "<") >>. name .>> (pstring ">"))  (fun  name genericname -> {Name=name;GenericParameterName =genericname; Namespace =[]}))
+     (pipe2
+            reference
+            ((pstring "<") >>. reference .>> (pstring ">"))
+            (fun reference genericreference -> {Reference=reference;GenericReference =genericreference;}))
     
 let constructorAssignment:Parser<NameWithValue> =
     pipe2 (spaces >>. name ) ((spaces >>. (pstring "="))>>. spaces >>. expression)(fun name exp -> {Name=name; Value =exp})
         
 let constructor: Parser<Constructor> =
-    (pipe2 (spaces >>. pstring "{" >>.(sepBy1 constructorAssignment (pstring ",")).>> pstring "}") (spaces >>. (opt (pstring "::" >>. reference))) (fun assignments typeReference -> {Assignments=assignments; TypeReference =typeReference}))
+    (pipe2 ( pstring "{" >>.(sepBy1 constructorAssignment (pstring ",")).>> pstring "}") (spaces >>. (opt (pstring "::" >>. reference))) (fun assignments typeReference -> {Assignments=assignments; TypeReference =typeReference}))
     
 let simpledestructor: Parser<SimpleDestructor> =
-    (pipe2 (spaces >>. name) (spaces  >>.  (pstring "#") >>. expression)  (fun name ex -> {DataObject=ex; Name =name}))
+    (pipe2 name (spaces  >>.  (pstring "#") >>. expression)  (fun name ex -> {DataObject=ex; Name =name}))
     
 let parmeterlesslambda: Parser<Lambda> =
-    (spaces  >>.  (pstring "fun") >>. spaces  >>.  (pstring "->") >>. expression) |>> (fun expr -> {Parameter=None; LambdaExpression=expr})
+    (funKeyword >>. spaces  >>. (pstring "->") >>.  spaces  >>. expression) |>> 
+        (fun expr -> {Parameter=None; LambdaExpression=expr})
     
 let parameter, parameterImplementation= createParserForwardedToRef()
 
 let lambda: Parser<Lambda> =
-    (pipe2 (spaces  >>.  (pstring "fun") >>. spaces  >>. parameter) (spaces >>. (pstring "->") >>. expression) (fun param expr -> {Parameter= Some param; LambdaExpression=expr}))
+    (pipe2 
+        (funKeyword >>. spaces  >>. parameter)
+        (spaces >>. (pstring "->") >>. spaces  >>. expression) 
+        (fun param expr -> {Parameter= Some param; LambdaExpression=expr}))
     
 do expressionImplementation := 
+    spaces  >>. 
     (attempt simpledestructor |>> fun x -> Expression.SimpleDestructor x)
     <|>(attempt lambda |>> fun x -> Expression.Lambda x)
-    <|>(attempt parmeterlesslambda |>> fun x -> Expression.Lambda x)
-    <|>(attempt functioncall |>> fun x -> Expression.FunctionCall x)
-    <|>(attempt reference |>> fun x -> Expression.Reference x)
-    <|>(attempt stringLiteral |>> fun x -> Expression.StringLiteral x)
-    <|>(attempt intLiteral |>> fun x -> Expression.IntLiteral x)
-    <|>(attempt listLiteral |>> fun x -> Expression.ListLiteral x)
+    <|>(parmeterlesslambda |>> fun x -> Expression.Lambda x)
+    <|>(functioncall |>> fun x -> Expression.FunctionCall x)
+    <|>(reference |>> fun x -> Expression.Reference x)
+    <|>(stringLiteral |>> fun x -> Expression.StringLiteral x)
+    <|>(intLiteral |>> fun x -> Expression.IntLiteral x)
+    <|>(listLiteral |>> fun x -> Expression.ListLiteral x)
     <|>(constructor |>> fun x -> Expression.Constructor x)
+    .>> spaces
 
 let assignment, assignmentImplementation= createParserForwardedToRef()
 
@@ -90,16 +102,18 @@ let whereblock : Parser<List<FullAssignment>> =
     
 let parameterType, parameterTypenImplementation= createParserForwardedToRef()
 let lambdaRef =
-    spaces >>. pstring "(" >>. pipe2 (opt (spaces  >>. parameterType)) (spaces >>. pstring "->" >>. spaces >>. parameterType .>>  spaces .>> pstring ")" ) 
+    spaces >>. pstring "(" >>. pipe2 
+        (opt (spaces  >>. parameterType))
+        (spaces >>. pstring "->" >>. spaces >>. parameterType .>>  spaces .>> pstring ")" ) 
         (fun para ret ->{Parameter= para; Return=ret})
     
 do parameterTypenImplementation  :=
-    ((attempt reference) |>> fun x -> SimpleTypeReference x)
-    <|>((attempt genericReference) |>> fun x -> GenericTypeReference x)
-    <|>((lambdaRef) |>> fun x -> LambdaReference x)
+    spaces >>. (attempt reference |>> fun x -> SimpleTypeReference x)
+    <|>(attempt genericReference |>> fun x -> GenericTypeReference x)
+    <|>(lambdaRef |>> fun x -> LambdaReference x)
     
 do parameterImplementation := 
-    (pipe2 name (spaces >>. (opt (pstring "::" >>. parameterType))) (fun name typereference -> {Name = name; TypeReference=typereference})) <|> (name |>> (fun x -> {Name = x; TypeReference=None})) 
+    (pipe2 name (spaces >>. (opt (pstring "::" >>. parameterType)).>> spaces) (fun name typereference -> {Name = name; TypeReference=typereference})) <|> (name |>> (fun x -> {Name = x; TypeReference=None})) 
 
 let functionassignment : Parser<Assignment> = 
     (pipe2 parameter (spaces >>. equalityKeyword >>. spaces >>. expression) (fun arg exp -> 
