@@ -5,7 +5,7 @@ ListTest=module
      ((Debug.print (first test)) world)
      where
      [
-        first list::c.List<String>= (List.head list)
-        test = ["Hello", "world"]
+        first list::List<String>= (List.head list)
+        test = ["Hello","world"]
      ]
  ]

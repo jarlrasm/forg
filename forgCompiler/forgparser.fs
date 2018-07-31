@@ -108,8 +108,8 @@ let lambdaRef =
         (fun para ret ->{Parameter= para; Return=ret})
     
 do parameterTypenImplementation  :=
-    spaces >>. (attempt reference |>> fun x -> SimpleTypeReference x)
-    <|>(attempt genericReference |>> fun x -> GenericTypeReference x)
+    spaces >>. (attempt genericReference |>> fun x -> GenericTypeReference x)
+    <|>(attempt reference |>> fun x -> SimpleTypeReference x)
     <|>(lambdaRef |>> fun x -> LambdaReference x)
     
 do parameterImplementation := 
