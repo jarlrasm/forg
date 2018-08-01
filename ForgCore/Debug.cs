@@ -7,8 +7,6 @@ namespace ForgCore
 
     public class Debug : ForgTypes.IForgModule
     {
-        public Ast.FullAssignment AST  => new Ast.FullAssignment("Debug",Ast.Assignment.NewParameterlessAssignment(Ast.ParameterlessAssignment.ModuleKeyword), FSharpList<Ast.FullAssignment>.Empty);
-
         public class print : ForgTypes.IForgFunc<ForgTypes.IForgFunc<Primitives.String,Core.World>, Primitives.String>
         {
             private  ForgTypes.IForgLambda<Primitives.String> _parameter;

@@ -2,10 +2,10 @@ ListTest=module
  where
  [
    main world::World=
-     ((Debug.print (first test)) world)
+     ((Debug.print (first<String> test)) world)
      where
      [
-        first list::List<String>= (List.head list)
+        first<a> list::List<a>= (List.head<a> list)
         test = ["Hello","world"]
      ]
  ]

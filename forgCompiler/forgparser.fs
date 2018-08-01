@@ -43,22 +43,35 @@ let expression, expressionImplementation= createParserForwardedToRef()
 let listLiteral =
     (pstring "[")>>. (sepBy expression (pstring ",")) .>> (pstring "]")|>> fun x -> {Expressions =x} 
     
-let functioncall:Parser<FunctionCall> = (pipe2 (pstring "(" >>.  expression ) ((opt expression) .>> pstring ")")  (fun f arg-> 
-    {Function = f; Argument=arg}))
  
-     
 let namespaces =
     (many1 name  .>> (pstring ".")) 
     
+let parameterType, parameterTypenImplementation= createParserForwardedToRef()
+
 let reference: Parser<Reference> =
-    (attempt  (pipe2 namespaces name (fun namespaces name  -> {Name=name; Namespace =namespaces})))
-     <|> (name |>> fun x-> {Name=x; Namespace =[]})
+    (attempt  (pipe3 
+        namespaces 
+        name  
+        (opt (pstring "<" >>.  parameterType .>> pstring ">" .>> spaces))
+            (fun namespaces  name  gen-> {Name=name; GenericType=gen; Namespace =namespaces})))
+     <|>  (pipe2
+                 name  
+                 (opt (pstring "<" >>.  parameterType .>> pstring ">" .>> spaces))
+                     (fun  name  gen-> {Name=name; GenericType=gen; Namespace =[]}))
+     
+let functioncall:Parser<FunctionCall> = 
+    (pipe2 (pstring "(" >>.  expression )
+        
+        ((opt expression) .>> pstring ")")
+            (fun f arg->    {Function = f; Argument=arg}))
+     
 
 let genericReference: Parser<GenericTypeReference> =
      (pipe2
             reference
             ((pstring "<") >>. reference .>> (pstring ">"))
-            (fun reference genericreference -> {Reference=reference;GenericReference =genericreference;}))
+            (fun reference genericreference -> {Reference={Name=reference.Name+"`1"; GenericType=reference.GenericType; Namespace=reference.Namespace};GenericReference =genericreference;}))
     
 let constructorAssignment:Parser<NameWithValue> =
     pipe2 (spaces >>. name ) ((spaces >>. (pstring "="))>>. spaces >>. expression)(fun name exp -> {Name=name; Value =exp})
@@ -100,7 +113,6 @@ let whereblock : Parser<List<FullAssignment>> =
     whereKeyword >>. spaces >>. (pstring "[") >>. spaces >>. many assignment 
     .>> spaces .>> (pstring "]") .>> spaces
     
-let parameterType, parameterTypenImplementation= createParserForwardedToRef()
 let lambdaRef =
     spaces >>. pstring "(" >>. pipe2 
         (opt (spaces  >>. parameterType))
@@ -147,25 +159,20 @@ let typedeclaration=
                              
 let typeassignment  : Parser<TypeDeclaration> = (spaces >>. equalityKeyword >>. spaces >>. typeKeyword >>. spaces >>. typedeclaration)
 
-let generictypeassignment : Parser<GenericTypeDeclaration> = 
-    (pipe2 (many parameter) (typeassignment) (fun arg dec -> 
-         {Parameters = arg; TypeDeclaration = dec}))
-  
 let typedecl=  
     (typeassignment |>> fun x -> Assignment.TypeDeclaration x)                           
                              
-let generictypedecl=  
-    (generictypeassignment|>> fun x -> Assignment.GenericTypeDeclaration x)  
     
-do assignmentImplementation := (pipe3 name 
+do assignmentImplementation := (pipe4 name
+                                    (opt ((pstring "<") >>. name .>> (pstring ">")))
                                     (spaces
                                      >>. ((attempt typedecl)
-                                          <|> (attempt generictypedecl)
                                           <|> (attempt parameterlessassignment) 
                                           <|> functionassignment))
-                                    (spaces >>. opt whereblock  ) (fun name assignment where -> 
+                                    (spaces >>. opt whereblock  ) (fun name genericParam assignment where -> 
                                     {FullAssignment.Name = name;
                                      FullAssignment.Assignment = assignment;
+                                     FullAssignment.GenericParameter = genericParam;
                                      FullAssignment.Where = 
                                          match where with
                                          | Some x -> x

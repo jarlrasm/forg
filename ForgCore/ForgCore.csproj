@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Debug.cs" />
     <Compile Include="Forg.cs" />
+    <Compile Include="List.cs" />
     <Compile Include="Primitives.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -17,10 +17,10 @@ let createContext (assemblies:List<Assembly>)=
          |> List.collect (fun x-> x.GetTypes() |>List.ofSeq) 
          |> List.filter (fun x-> typeof<IForgModule>.IsAssignableFrom(x))
          |> List.map 
-            (fun x-> (x,x.GetNestedTypes()  
-                |>List.ofSeq
-                |> List.filter (fun (y)-> typeof<IForgType>.IsAssignableFrom(y))
-            ))
+                (fun x-> (x,x.GetNestedTypes()  
+                    |>List.ofSeq
+                    |> List.filter (fun (y)-> typeof<IForgType>.IsAssignableFrom(y))
+                ))
          |> List.collect (fun (x,y)-> y|> List.map (fun z->{SymbolName=z.Name; Namespace=[x.Name]; Ref=SystemType z}))
         ]
      }
@@ -40,12 +40,16 @@ let popFrame context = {Symbols = context.Symbols.Tail}
 let lookup context (reference:Ast.Reference)=
     context.Symbols 
      |> List.collect (fun x->x)
-     |> List.filter (fun x-> x.SymbolName = reference.Name)//TODO namespace
+     |> List.filter (fun x->
+            match reference.GenericType with 
+            |Some _t -> x.SymbolName = reference.Name+"`1"
+            |None -> x.SymbolName = reference.Name
+        )//TODO namespace
      |> List.tryHead
      
 let getParameters context = 
      context.Symbols 
      |> List.collect (fun x->x)
      |> List.filter (fun x-> match x.Ref with
-                                      | Parameter para -> (lookup context {Name=x.SymbolName; Namespace=[]}).Value = x
+                                      | Parameter para -> (lookup context {Name=x.SymbolName; GenericType=None; Namespace=[]}).Value = x
                                       | _ -> false)

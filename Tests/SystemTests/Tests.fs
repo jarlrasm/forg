@@ -6,6 +6,7 @@ open System.IO;
 open System.Linq;
 open System.Reflection;
 open Xunit;
+open Xunit.Abstractions
 
 let sourcePath ()= Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/source"
 let sourceFiles ()= System.IO.Directory.GetFiles(sourcePath())  
@@ -15,16 +16,16 @@ let ExecuteProgramAndReturnStdOut filename=
    start.UseShellExecute <- false;
    start.RedirectStandardOutput <- true;
    let mutable result = "";
-   use  process = Process.Start(start) 
-   use reader = process.StandardOutput
+   use  p = Process.Start(start) 
+   use reader = p.StandardOutput
    result <- result + reader.ReadToEnd()
-   process.WaitForExit();
+   p.WaitForExit();
    result;
 let GetSourceFileName name = sprintf "%s/%s" (sourcePath()) name;
     
 let CompileFile  fileName = Program.main [|fileName|]
 
-type Tests () =
+type Tests (output:ITestOutputHelper) =
     
     static member ForgFiles 
         with get() = sourceFiles() |> Array.map (fun x -> [|x|]) 
@@ -40,6 +41,7 @@ type Tests () =
     [<Theory>]
     [<MemberData("ForgFiles")>]
     member x.CompileFilesWithoutErrors filename=
+        output.WriteLine(filename)
         Assert.Equal(0,CompileFile(filename))
     
 

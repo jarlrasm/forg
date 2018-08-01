@@ -6,8 +6,6 @@ namespace ForgCore
 {
     public class Core : ForgTypes.IForgModule
     {
-        public Ast.FullAssignment AST => new Ast.FullAssignment("Core",Ast.Assignment.NewParameterlessAssignment(Ast.ParameterlessAssignment.ModuleKeyword), FSharpList<Ast.FullAssignment>.Empty);
-
 
         public class WorldCreator : ForgTypes.IForgLambda<World>
         {
@@ -19,7 +17,6 @@ namespace ForgCore
         }
         public class World : ForgTypes.IForgType
         {
-            public Ast.FullAssignment AST => new Ast.FullAssignment("World",Ast.Assignment.NewTypeDeclaration(Ast.TypeDeclaration.Primitive), FSharpList<Ast.FullAssignment>.Empty); 
         }
         internal class worldfunc<T> : ForgTypes.IForgFunc<T,World>
         {

@@ -1,8 +1,8 @@
 module Ast
 
-type Reference = {Name:string; Namespace:List<string>}
-type GenericTypeReference = {Reference:Reference; GenericReference:Reference;}
-type LambdaReference = {Parameter: Option<ParameterType>; Return:ParameterType}
+type Reference = {Name:string;GenericType:Option<ParameterType>;Namespace:List<string>}
+and GenericTypeReference = {Reference:Reference; GenericReference:Reference;}
+and LambdaReference = {Parameter: Option<ParameterType>; Return:ParameterType}
 and ParameterType =
     |SimpleTypeReference of Reference
     |LambdaReference of LambdaReference
@@ -53,17 +53,14 @@ type TypeDeclaration =
     |Algebraic of AlgebraicType
     |Data of DataType
     
-type GenericTypeDeclaration =
-    {Parameters : List<Parameter>;
-     TypeDeclaration : TypeDeclaration}
 
 type Assignment = 
     | FunctionAssignment of FunctionAssignment
     | ParameterlessAssignment of ParameterlessAssignment
     | TypeDeclaration of TypeDeclaration
-    | GenericTypeDeclaration of GenericTypeDeclaration
 
 type FullAssignment = 
     {Name : string;
      Assignment : Assignment;
+     GenericParameter : Option<string>;
      Where : List<FullAssignment>}

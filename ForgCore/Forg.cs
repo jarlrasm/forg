@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.FSharp.Collections;
+using Microsoft.FSharp.Core;
 
 namespace ForgCore
 {
     public class Forg: ForgTypes.IForgModule
     {
-        public Ast.FullAssignment AST => new Ast.FullAssignment("Forg",Ast.Assignment.NewParameterlessAssignment(Ast.ParameterlessAssignment.ModuleKeyword), FSharpList<Ast.FullAssignment>.Empty);
-
         public class Bool : ForgTypes.IForgAlgebraicType
         {
             private Bool(ForgTypes.IForgType value)
