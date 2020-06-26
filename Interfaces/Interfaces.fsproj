@@ -49,5 +49,8 @@
     <Compile Include="ForgTypes.fs" />
     <Compile Include="Context.fs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="NetAst.fs" />
+  </ItemGroup>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
 </Project>

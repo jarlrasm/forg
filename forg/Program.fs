@@ -11,7 +11,7 @@ let main argv =
     let code = System.IO.File.ReadAllText(file);
     
     match run ForgParser.parser code with
-    | Success(result, _, _)   -> ForgWriter.push result context;
+    | Success(result, _, _)   -> ForgWriter.push (ForgDotNetify.dotNetify result) context;
                                  0
     | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg
                                  1

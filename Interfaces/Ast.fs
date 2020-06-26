@@ -32,9 +32,6 @@ type FunctionAssignment =
     {Parameter : Parameter;
      Expression : Expression}
 
-type ParameterlessAssignment = 
-    | ModuleKeyword
-    | Expression of Expression
 
 
 type Atom={Name:string}
@@ -56,8 +53,9 @@ type TypeDeclaration =
 
 type Assignment = 
     | FunctionAssignment of FunctionAssignment
-    | ParameterlessAssignment of ParameterlessAssignment
+    | ValueAssignment of Expression
     | TypeDeclaration of TypeDeclaration
+    | ModuleAssignment
 
 type FullAssignment = 
     {Name : string;

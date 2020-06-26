@@ -132,15 +132,17 @@ let functionassignment : Parser<Assignment> =
          FunctionAssignment {Parameter = arg;
                              Expression = exp}))
 
-let parameterlessassignment : Parser<Assignment> = 
+let valueassignment : Parser<Assignment> = 
     equalityKeyword >>. spaces 
-    >>. ((moduleKeyword 
-          |>> (fun x -> 
-          ParameterlessAssignment ParameterlessAssignment.ModuleKeyword)) 
-         <|> (expression 
+    >>.  (expression 
               |>> (fun x -> 
-              ParameterlessAssignment(ParameterlessAssignment.Expression x))))
+              ValueAssignment  x))
 
+let moduleAssignment : Parser<Assignment> = 
+    equalityKeyword >>. spaces >>. 
+        ((moduleKeyword 
+          |>> (fun _ ->   ModuleAssignment)) )
+          
 let atom:Parser<Atom>=
      name .>> spaces|>> fun x-> {Name=x}
 
@@ -167,7 +169,8 @@ do assignmentImplementation := (pipe4 name
                                     (opt ((pstring "<") >>. name .>> (pstring ">")))
                                     (spaces
                                      >>. ((attempt typedecl)
-                                          <|> (attempt parameterlessassignment) 
+                                          <|> (attempt valueassignment) 
+                                          <|> (attempt moduleAssignment) 
                                           <|> functionassignment))
                                     (spaces >>. opt whereblock  ) (fun name genericParam assignment where -> 
                                     {FullAssignment.Name = name;
