@@ -30,7 +30,8 @@ and Expression =
 
 type FunctionAssignment = 
     {Parameter : Parameter;
-     Expression : Expression}
+     Expression : Expression;
+     TypeReference : Option<ParameterType>;}
 
 
 
@@ -49,11 +50,16 @@ type TypeDeclaration =
     |Atom of Atom
     |Algebraic of AlgebraicType
     |Data of DataType
-    
+
+type ValueAssignment =
+    {
+         Expression : Expression;
+         TypeReference : Option<ParameterType>;
+    }
 
 type Assignment = 
     | FunctionAssignment of FunctionAssignment
-    | ValueAssignment of Expression
+    | ValueAssignment of ValueAssignment
     | TypeDeclaration of TypeDeclaration
     | ModuleAssignment
 

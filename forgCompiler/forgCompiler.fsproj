@@ -53,6 +53,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="forgparser.fs" />
     <Compile Include="forgwriter.fs" />
+    <Compile Include="typeinference.fs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

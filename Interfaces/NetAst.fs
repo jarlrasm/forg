@@ -25,24 +25,25 @@ type Code=
         OpCode : OpCode;
         Arguments : List<OpCodeArgument>
     }
-type ArgumentDeclarations=
+type ArgumentDeclaration=
     {
         Name : string;
         ArgumentType :TypeReference
     }
 type FunctionImplementation =
     {
-        Arguments:List<ArgumentDeclarations>;
+        Arguments:List<ArgumentDeclaration>;
         Code : List<Code>;
     }
 type ConstructorDeclaration =
     {
         Implementation : FunctionImplementation;
     }
-type NamedFunctionDeclaration =
+type FunctionDeclaration =
     {
         Name : string;
         Implementation : FunctionImplementation;
+        Returns : TypeReference
     }
 type ClassDeclaration =
     {
@@ -52,5 +53,5 @@ type ClassDeclaration =
         InnerClasses :  List<ClassDeclaration>;
         Properties: List<PropertyDeclaration>;
         Constructor: Option<ConstructorDeclaration>;
-        Functions: List<NamedFunctionDeclaration>;
+        Functions: List<FunctionDeclaration>;
     }

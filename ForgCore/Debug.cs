@@ -10,7 +10,10 @@ namespace ForgCore
         public class print : ForgTypes.IForgFunc<ForgTypes.IForgFunc<Primitives.String,Core.World>, Primitives.String>
         {
             private  ForgTypes.IForgLambda<Primitives.String> _parameter;
-
+            public print(ForgTypes.IForgLambda<Primitives.String> parameter)
+            {
+                _parameter = parameter;
+            }
 
             public ForgTypes.IForgFunc<Primitives.String, Core.World> Execute()
             {
@@ -21,11 +24,6 @@ namespace ForgCore
                 });
             }
 
-            public ForgTypes.IForgLambda<Primitives.String> Parameter
-            {
-                get => _parameter;
-                set => _parameter = value;
-            }
         }
         
     }

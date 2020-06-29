@@ -130,13 +130,15 @@ do parameterImplementation :=
 let functionassignment : Parser<Assignment> = 
     (pipe2 parameter (spaces >>. equalityKeyword >>. spaces >>. expression) (fun arg exp -> 
          FunctionAssignment {Parameter = arg;
-                             Expression = exp}))
+                             Expression = exp;
+                             TypeReference=None}))
 
 let valueassignment : Parser<Assignment> = 
     equalityKeyword >>. spaces 
     >>.  (expression 
               |>> (fun x -> 
-              ValueAssignment  x))
+              ValueAssignment  {  Expression = x;
+                                  TypeReference=None}))
 
 let moduleAssignment : Parser<Assignment> = 
     equalityKeyword >>. spaces >>. 
@@ -169,8 +171,8 @@ do assignmentImplementation := (pipe4 name
                                     (opt ((pstring "<") >>. name .>> (pstring ">")))
                                     (spaces
                                      >>. ((attempt typedecl)
-                                          <|> (attempt valueassignment) 
                                           <|> (attempt moduleAssignment) 
+                                          <|> (attempt valueassignment) 
                                           <|> functionassignment))
                                     (spaces >>. opt whereblock  ) (fun name genericParam assignment where -> 
                                     {FullAssignment.Name = name;

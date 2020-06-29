@@ -29,5 +29,4 @@ type IForgParameterlessFunc<'output> =
     
 type IForgFunc<'output, 'input> =
     inherit IForgLambda<'output>
-    abstract member Parameter: IForgLambda<'input> with get, set
     

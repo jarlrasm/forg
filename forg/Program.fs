@@ -11,7 +11,10 @@ let main argv =
     let code = System.IO.File.ReadAllText(file);
     
     match run ForgParser.parser code with
-    | Success(result, _, _)   -> ForgWriter.push (ForgDotNetify.dotNetify result) context;
+    | Success(result, _, _)   -> 
+                                 let typed=TypeInference.findTypes result context
+                                 printf "%A\n" typed
+                                 ForgWriter.push (ForgDotNetify.dotNetify typed) context;
                                  0
     | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg
                                  1
